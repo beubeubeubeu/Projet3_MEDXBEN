@@ -1,4 +1,5 @@
-"use client"
+'use client';
+
 import { Flex, Text } from '@chakra-ui/react'
 
 const Footer = () => {

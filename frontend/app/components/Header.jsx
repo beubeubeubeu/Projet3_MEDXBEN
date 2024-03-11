@@ -1,6 +1,7 @@
-"use client"
-import { Flex, Text } from '@chakra-ui/react'
-import { ConnectButton } from '@rainbow-me/rainbowkit'
+'use client';
+
+import { Flex, Text } from '@chakra-ui/react';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 const Header = () => {
   return (
