@@ -16,7 +16,7 @@ const Layout = ({ children }) => {
         grow="1"
         p="2rem"
       >
-          {children}
+        {children}
       </Flex>
       <Footer />
     </Flex>
