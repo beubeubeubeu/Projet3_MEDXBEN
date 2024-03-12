@@ -310,4 +310,12 @@ export const contractAbi=[
     "stateMutability": "view",
     "type": "function"
   }
-]
+];
+export const workflowStatuses = {
+        0 : "Registering voters",
+        1 : "Proposals registration started",
+        2 : "Proposals registration ended",
+        3 : "Voting session started",
+        4 : "Voting session ended",
+        5 : "Votes tallied"
+};

@@ -1,4 +1,7 @@
 // SPDX-License-Identifier: MIT
+
+pragma solidity 0.8.20;
+
 pragma solidity 0.8.20;
 import "@openzeppelin/contracts/access/Ownable.sol";
 
@@ -9,7 +12,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
  */
 
 /**
- 
+
 Here is the flow of the entire voting process:
     The voting administrator registers a whitelist of voters identified by their Ethereum address.
     The voting administrator starts the proposal registration session.
@@ -25,7 +28,7 @@ Here is the flow of the entire voting process:
 contract Voting is Ownable {
     uint256 public winningProposalID;
     uint256 private maxVoteCount;
-    
+
     struct Voter {
         bool isRegistered;
         bool hasVoted;
@@ -259,8 +262,8 @@ contract Voting is Ownable {
 
     /**
 @notice Function to tally the votes and determines the wining proposal
-@dev Require to be in the right state, 
-* require to be the owner, 
+@dev Require to be in the right state,
+* require to be the owner,
 * the winning propsal is already determined by the 'setVotes' function,
 * modifies the state and emit a event
 */
