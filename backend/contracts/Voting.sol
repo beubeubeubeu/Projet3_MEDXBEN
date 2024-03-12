@@ -5,15 +5,9 @@ pragma solidity 0.8.20;
 pragma solidity 0.8.20;
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-/**
- * @title Voting.sol
- * @author Khoule Medhi / Benoit Nguyen
- * @notice Smart voting contract for a small organization.
- */
 
 /**
-
-Here is the flow of the entire voting process:
+    Here is the flow of the entire voting process:
     The voting administrator registers a whitelist of voters identified by their Ethereum address.
     The voting administrator starts the proposal registration session.
     Registered voters are allowed to register their proposals while the registration session is active.
@@ -25,6 +19,12 @@ Here is the flow of the entire voting process:
     Everyone can verify the final details of the winning proposal.
  */
 
+
+/**
+    @title Voting.sol
+    @author Khoule Medhi / Benoit Nguyen
+    @notice Smart voting contract for a small organization.
+*/
 contract Voting is Ownable {
     uint256 public winningProposalID;
     uint256 private maxVoteCount;
@@ -55,13 +55,12 @@ contract Voting is Ownable {
 
     /// @notice Emitted when a new voter is registered
     /// @param voterAddress The address of the newly registered voter
-
     event VoterRegistered(address voterAddress);
-    /*
-     * @notice Emitted when the Workflow status of the voting process is modified
-     * @param Previous Status Workflow status before the change
-     * @param New Status Workflow status after the change
-     */
+
+
+    // @notice Emitted when the Workflow status of the voting process is modified
+    // @param Previous Status Workflow status before the change
+    // @param New Status Workflow status after the change
     event WorkflowStatusChange(
         WorkflowStatus previousStatus,
         WorkflowStatus newStatus
@@ -69,7 +68,6 @@ contract Voting is Ownable {
 
     /// @notice Emitted when a new proposal is created
     /// @param proposalId The ID of the new registered proposal
-
     event ProposalRegistered(uint256 proposalId);
 
     /// @notice Emitted when a voter vote for a proposal
@@ -217,7 +215,6 @@ contract Voting is Ownable {
 
     /// @notice Function to end the proposals registering
     /// @dev Require to be in the right state, require to be the owner, modifies the state and emit a event
-
     function EndProposalsRegistering() external onlyOwner {
         require(
             workflowStatus == WorkflowStatus.ProposalsRegistrationStarted,
@@ -232,7 +229,6 @@ contract Voting is Ownable {
 
     /// @notice Function to start the voting session
     /// @dev Require to be in the right state, require to be the owner, modifies the state and emit a event
-
     function StartVotingSession() external onlyOwner {
         require(
             workflowStatus == WorkflowStatus.ProposalsRegistrationEnded,
@@ -247,7 +243,6 @@ contract Voting is Ownable {
 
     /// @notice Function to end the voting session
     /// @dev Require to be in the right state, require to be the owner, modifies the state and emit a event
-
     function EndVotingSession() external onlyOwner {
         require(
             workflowStatus == WorkflowStatus.VotingSessionStarted,
