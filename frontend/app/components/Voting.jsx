@@ -51,7 +51,7 @@ const Voting = () => {
     })
 
     // Get workflow status
-    const { data: getWorkflowStatusData, error: getWorkflowStatusError, isPending: getWorkflowStatusIsPending } = useReadContract({
+    const { data: getWorkflowStatusData, error: getWorkflowStatusError, isPending: getWorkflowStatusIsPending, refetch: refetchWorkflowStatus } = useReadContract({
         address: contractAddress,
         abi: contractAbi,
         functionName: 'workflowStatus',
@@ -93,6 +93,7 @@ const Voting = () => {
     const { data: startProposalRegistrationTxhash, error: startProposalRegistrationError, isPending: startProposalRegistrationIsPending, writeContract: startProposalRegistration } = useWriteContract({
         mutation: {
             onSuccess: () => {
+                refetchWorkflowStatus();
                 toast({
                     title: "Proposal registration started",
                     status: "success",
