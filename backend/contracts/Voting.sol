@@ -25,6 +25,7 @@ Here is the flow of the entire voting process:
 contract Voting is Ownable {
     uint256 public winningProposalID;
     uint256 private maxVoteCount;
+    
     struct Voter {
         bool isRegistered;
         bool hasVoted;
