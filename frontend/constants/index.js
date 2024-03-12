@@ -118,7 +118,7 @@ export const contractAbi=[
         "type": "string"
       }
     ],
-    "name": "addProposal",
+    "name": "AddProposal",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -131,21 +131,21 @@ export const contractAbi=[
         "type": "address"
       }
     ],
-    "name": "addVoter",
+    "name": "AddVoter",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [],
-    "name": "endProposalsRegistering",
+    "name": "EndProposalsRegistering",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [],
-    "name": "endVotingSession",
+    "name": "EndVotingSession",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -158,7 +158,7 @@ export const contractAbi=[
         "type": "uint256"
       }
     ],
-    "name": "getOneProposal",
+    "name": "GetOneProposal",
     "outputs": [
       {
         "components": [
@@ -189,7 +189,7 @@ export const contractAbi=[
         "type": "address"
       }
     ],
-    "name": "getVoter",
+    "name": "GetVoter",
     "outputs": [
       {
         "components": [
@@ -218,6 +218,40 @@ export const contractAbi=[
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_id",
+        "type": "uint256"
+      }
+    ],
+    "name": "SetVote",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "StartProposalsRegistering",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "StartVotingSession",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "TallyVotes",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "owner",
     "outputs": [
@@ -233,40 +267,6 @@ export const contractAbi=[
   {
     "inputs": [],
     "name": "renounceOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_id",
-        "type": "uint256"
-      }
-    ],
-    "name": "setVote",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "startProposalsRegistering",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "startVotingSession",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "tallyVotes",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

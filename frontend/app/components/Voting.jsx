@@ -41,7 +41,7 @@ const Voting = () => {
         }
     }
 
-    // Get voter data (not tested yet)
+    // Get voter data (not implemented yet)
     const { data: getVoterData, error: getVoterError, isPending: getVoterIsPending, refetch } = useReadContract({
         address: contractAddress,
         abi: contractAbi,
@@ -59,11 +59,11 @@ const Voting = () => {
     })
 
     // Add voter
-    const { data: hash, error, isPending: addVoterIsPending, writeContract: addVoterCall } = useWriteContract({
+    const { data: addVoterTxhash, error: addVotererror, isPending: addVoterIsPending, writeContract: addVoterCall } = useWriteContract({
         mutation: {
             onSuccess: () => {
                 toast({
-                    title: "Le voter a bien été ajouté",
+                    title: "Voter has been added",
                     status: "success",
                     duration: 3000,
                     isClosable: true,
@@ -71,7 +71,7 @@ const Voting = () => {
             },
             onError: (error) => {
                 toast({
-                    title: error.message,
+                    title: addVotererror.message,
                     status: "error",
                     duration: 3000,
                     isClosable: true,
@@ -85,8 +85,39 @@ const Voting = () => {
         addVoterCall({
             address: contractAddress,
             abi: contractAbi,
-            functionName: 'addVoter',
+            functionName: 'AddVoter',
             args: [voterAddress],
+        })
+    }
+
+    const { data: startProposalRegistrationTxhash, error: startProposalRegistrationError, isPending: startProposalRegistrationIsPending, writeContract: startProposalRegistration } = useWriteContract({
+        mutation: {
+            onSuccess: () => {
+                toast({
+                    title: "Proposal registration started",
+                    status: "success",
+                    duration: 3000,
+                    isClosable: true,
+                });
+            },
+            onError: (error) => {
+                toast({
+                    title: startProposalRegistrationError.message,
+                    status: "error",
+                    duration: 3000,
+                    isClosable: true,
+                });
+            },
+        },
+    })
+
+    // Start proposal registration
+    const handleStartProposalRegistration = async() => {
+        console.log('toto')
+        startProposalRegistration({
+            address: contractAddress,
+            abi: contractAbi,
+            functionName: 'StartProposalsRegistering',
         })
     }
 
@@ -106,6 +137,13 @@ const Voting = () => {
                 <Input placeholder='New voter address' onChange={(e) => setVoterAddress(e.target.value)} />
                 <Button disabled={addVoterIsPending} onClick={addVoter}>{addVoterIsPending ? 'Confirming...' : 'Add voter'} </Button>
             </Flex>
+            { workflowStatuses[getWorkflowStatusData] === "Registering voters" ? (
+                <Flex>
+                        <Button colorScheme='teal' size='lg' onClick={handleStartProposalRegistration}>
+                            Start proposal registration
+                        </Button>
+                </Flex>
+            ) : null }
         </Box>
     )
 }

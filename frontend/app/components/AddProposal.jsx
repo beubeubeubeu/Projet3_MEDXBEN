@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { ethers } from 'ethers';
+// import { ethers } from 'ethers';
 import { Box, Button, Input, Text } from '@chakra-ui/react';
 import { useReadContract } from 'wagmi';
 
 
 
 function AddProposal({ contractAddress, contractAbi, voterAddress }) {
-  const [proposalDescription, setProposalDescription] = useState(''); 
+  const [proposalDescription, setProposalDescription] = useState('');
   const { data: getVoterData, error: getVoterError, isPending: getVoterIsPending } = useReadContract({
     address: contractAddress,
     abi: contractAbi,
@@ -46,8 +46,8 @@ function AddProposal({ contractAddress, contractAbi, voterAddress }) {
         value={proposalDescription}
         onChange={(e) => setProposalDescription(e.target.value)}
       />
-      <Button 
-        colorScheme='teal' 
+      <Button
+        colorScheme='teal'
         size='sm'
         onClick={handleProposalSubmission}
       >Add my proposal
@@ -56,4 +56,4 @@ function AddProposal({ contractAddress, contractAbi, voterAddress }) {
   );
 }
 
-export default AddProposal; 
+export default AddProposal;
