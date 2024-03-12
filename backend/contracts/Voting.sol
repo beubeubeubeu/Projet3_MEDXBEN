@@ -23,17 +23,17 @@ Here is the flow of the entire voting process:
  */
 
 contract Voting is Ownable {
-    uint public winningProposalID;
-
+    uint256 public winningProposalID;
+    uint256 private maxVoteCount;
     struct Voter {
         bool isRegistered;
         bool hasVoted;
-        uint votedProposalId;
+        uint256 votedProposalId;
     }
 
     struct Proposal {
         string description;
-        uint voteCount;
+        uint256 voteCount;
     }
 
     enum WorkflowStatus {
@@ -66,18 +66,18 @@ contract Voting is Ownable {
     /// @notice Emitted when a new proposal is created
     /// @param proposalId The ID of the new registered proposal
 
-    event ProposalRegistered(uint proposalId);
+    event ProposalRegistered(uint256 proposalId);
 
     /// @notice Emitted when a voter vote for a proposal
     /// @param voter The address of the voter who has voted
     /// @param proposalId The ID proposal that was voted by voter
 
-    event Voted(address voter, uint proposalId);
+    event Voted(address voter, uint256 proposalId);
 
     constructor() Ownable(msg.sender) {}
 
     /// @notice Modifier to verify if the address is whitelisted
-    /// @dev Revert if not whitelisted
+    /// @dev Revert if address is not whitelisted
 
     modifier onlyVoters() {
         require(voters[msg.sender].isRegistered, "You're not a voter");
@@ -93,9 +93,12 @@ contract Voting is Ownable {
      * @param _addr Ethereum address
      * @return bool isRegistered; bool hasVoted; uint votedProposalId;
      */
-    function GetVoter(
-        address _addr
-    ) external view onlyVoters returns (Voter memory) {
+    function GetVoter(address _addr)
+        external
+        view
+        onlyVoters
+        returns (Voter memory)
+    {
         return voters[_addr];
     }
 
@@ -104,19 +107,22 @@ contract Voting is Ownable {
      * @param _id The index of the propasal in the array
      * @return string The description of the proposal
      */
-    function GetOneProposal(
-        uint _id
-    ) external view onlyVoters returns (Proposal memory) {
+    function GetOneProposal(uint256 _id)
+        external
+        view
+        onlyVoters
+        returns (Proposal memory)
+    {
         return proposalsArray[_id];
     }
 
     // ::::::::::::: REGISTRATION ::::::::::::: //
     /**
- * @notice Function to add a voter in the whitlist
- * @param _addr Address of the voter to be added to the whitelist
- * @dev This function use the modifier onlyOwner, require to be in the right state, 
-        add voter to the struc Voter and emit en event
- */
+     * @notice Function to add a voter in the whitlist
+     * @param _addr Address of the voter to be added to the whitelist
+     * @dev This function use the modifier onlyOwner, require to be in the right state,
+     * add voter to the struc Voter and emit en event
+     */
     function AddVoter(address _addr) external onlyOwner {
         require(
             workflowStatus == WorkflowStatus.RegisteringVoters,
@@ -130,11 +136,11 @@ contract Voting is Ownable {
 
     // ::::::::::::: PROPOSAL ::::::::::::: //
     /**
- * @notice Function to add a proposal if your are whitelisted
- * @param _desc Description of the proposal
- * @dev Require to be in the right state, description cannot be empty, 
-        add the proposal to a array and emit an event
- */
+     * @notice Function to add a proposal if your are whitelisted
+     * @param _desc Description of the proposal
+     * @dev Require to be in the right state, description cannot be empty,
+     * add the proposal to a array and emit an event
+     */
     function AddProposal(string calldata _desc) external onlyVoters {
         require(
             workflowStatus == WorkflowStatus.ProposalsRegistrationStarted,
@@ -155,12 +161,12 @@ contract Voting is Ownable {
 
     // ::::::::::::: VOTE ::::::::::::: //
     /**
- * @notice Authorize the whitelisted to vote for a proposal
- * @param _id The index of the proposal
- * @dev Require that the voter hasn't already vote, require to vote for a existing proposal,
-        emit an event
- */
-    function SetVote(uint _id) external onlyVoters {
+     * @notice Authorize the whitelisted to vote for a proposal and establish the wining proposal id at the moment
+     * @param _id The index of the proposal
+     * @dev Require that the voter hasn't already vote, require to vote for a existing proposal,
+     * emit an event
+     */
+    function SetVote(uint256 _id) external onlyVoters {
         require(
             workflowStatus == WorkflowStatus.VotingSessionStarted,
             "Voting session havent started yet"
@@ -172,15 +178,22 @@ contract Voting is Ownable {
         voters[msg.sender].hasVoted = true;
         proposalsArray[_id].voteCount++;
 
+        if (proposalsArray[_id].voteCount > maxVoteCount) {
+            winningProposalID = _id;
+            maxVoteCount = proposalsArray[_id].voteCount;
+        }
         emit Voted(msg.sender, _id);
     }
 
     // ::::::::::::: STATE ::::::::::::: //
     /**
- * @notice Function to start the proposals registering
- * @dev Require to be in the right state, when the function is call by the owner, a default proposal is create with the description "genesis",
-        modifies the state, and emit a event
- */
+     * @notice Function to start the proposals registering
+     * @dev Require to be in the right state,
+     * require to be the owner,
+     * a default proposal is create with the description "genesis",
+     * modifies the state,
+     * and emit a event
+     */
     function StartProposalsRegistering() external onlyOwner {
         require(
             workflowStatus == WorkflowStatus.RegisteringVoters,
@@ -199,7 +212,7 @@ contract Voting is Ownable {
     }
 
     /// @notice Function to end the proposals registering
-    /// @dev Modifies the state and emit a event
+    /// @dev Require to be in the right state, require to be the owner, modifies the state and emit a event
 
     function EndProposalsRegistering() external onlyOwner {
         require(
@@ -214,7 +227,7 @@ contract Voting is Ownable {
     }
 
     /// @notice Function to start the voting session
-    /// @dev Modifies the state and emit a event
+    /// @dev Require to be in the right state, require to be the owner, modifies the state and emit a event
 
     function StartVotingSession() external onlyOwner {
         require(
@@ -229,7 +242,7 @@ contract Voting is Ownable {
     }
 
     /// @notice Function to end the voting session
-    /// @dev Modifies the state and emit a event
+    /// @dev Require to be in the right state, require to be the owner, modifies the state and emit a event
 
     function EndVotingSession() external onlyOwner {
         require(
@@ -243,24 +256,18 @@ contract Voting is Ownable {
         );
     }
 
-    /// @notice Function to tally the votes and find the wining proposal
-    /// @dev look for the highest vote count for a proposal, modifies the state and emit a event
-
+    /**
+@notice Function to tally the votes and determines the wining proposal
+@dev Require to be in the right state, 
+* require to be the owner, 
+* the winning propsal is already determined by the 'setVotes' function,
+* modifies the state and emit a event
+*/
     function TallyVotes() external onlyOwner {
         require(
             workflowStatus == WorkflowStatus.VotingSessionEnded,
             "Current status is not voting session ended"
         );
-        uint _winningProposalId;
-        for (uint256 p = 0; p < proposalsArray.length; p++) {
-            if (
-                proposalsArray[p].voteCount >
-                proposalsArray[_winningProposalId].voteCount
-            ) {
-                _winningProposalId = p;
-            }
-        }
-        winningProposalID = _winningProposalId;
 
         workflowStatus = WorkflowStatus.VotesTallied;
         emit WorkflowStatusChange(
