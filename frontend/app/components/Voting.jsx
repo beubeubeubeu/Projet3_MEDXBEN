@@ -49,16 +49,16 @@ const Voting = () => {
 
     // Is owner
     function isOwner() {
-    if (!isConnected) {
-        return false
-    } else {
-        const { data: ownerAddress } = useContractRead({
-        address: contractAddress,
-        abi: contractAbi,
-        functionName: 'owner',
-        })
-        return ownerAddress === address;
-    }
+        if (!isConnected) {
+            return false
+        } else {
+            const { data: ownerAddress } = useContractRead({
+            address: contractAddress,
+            abi: contractAbi,
+            functionName: 'owner',
+            })
+            return ownerAddress === address;
+        }
     }
 
     // Get voter data (not tested yet)
@@ -100,8 +100,7 @@ const Voting = () => {
         },
     });
 
-
-  // Add voter
+    // Add voter call
     const addVoter = async() => {
         addVoterCall({
             address: contractAddress,
@@ -112,23 +111,23 @@ const Voting = () => {
     }
 
     return (
-    <Box
-        direction="column"
-        width="100%"
-    >
-        <Flex width="100%">
-        {getWorkflowStatusIsPending ? (
-                    <Spinner />
-                ) : (
-                    <Text><b>Workflow status :</b> {workflowStatuses[getWorkflowStatusData]}</Text>
-            )}
-        </Flex>
-        <Flex>
-            <Input placeholder='New voter address' onChange={(e) => setVoterAddress(e.target.value)} />
-            <Button disabled={addVoterIsPending} onClick={addVoter}>{addVoterIsPending ? 'Confirming...' : 'Add voter'} </Button>
-        </Flex>
-    </Box>
+        <Box
+            direction="column"
+            width="100%"
+        >
+            <Flex width="100%">
+                {getWorkflowStatusIsPending ? (
+                        <Spinner />
+                    ) : (
+                        <Text><b>Workflow status :</b> {workflowStatuses[getWorkflowStatusData]}</Text>
+                )}
+            </Flex>
+            <Flex>
+                <Input placeholder='New voter address' onChange={(e) => setVoterAddress(e.target.value)} />
+                <Button disabled={addVoterIsPending} onClick={addVoter}>{addVoterIsPending ? 'Confirming...' : 'Add voter'} </Button>
+            </Flex>
+        </Box>
     )
-    }
+}
 
 export default Voting
