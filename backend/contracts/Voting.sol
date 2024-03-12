@@ -101,8 +101,8 @@ contract Voting is Ownable {
 
     /**
      * @notice Getter to obtain a proposal
-     * @param _id the index of the propasal in the array
-     * @return string description; uint voteCount;
+     * @param _id The index of the propasal in the array
+     * @return string The description of the proposal
      */
     function GetOneProposal(
         uint _id
@@ -114,7 +114,6 @@ contract Voting is Ownable {
     /**
  * @notice Function to add a voter in the whitlist
  * @param _addr Address of the voter to be added to the whitelist
- * @return string Description; uint voteCount;
  * @dev This function use the modifier onlyOwner, require to be in the right state, 
         add voter to the struc Voter and emit en event
  */
