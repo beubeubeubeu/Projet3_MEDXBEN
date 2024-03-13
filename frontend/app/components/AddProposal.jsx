@@ -1,57 +1,91 @@
 import { useState } from 'react';
-// import { ethers } from 'ethers';
-import { Box, Button, Input, Text } from '@chakra-ui/react';
-import { useReadContract } from 'wagmi';
+import { Box, Button, Input, Text, useToast } from '@chakra-ui/react';
+import { useAccount, useReadContract, useWriteContract } from 'wagmi';
+import { contractAddress, contractAbi } from '@/constants'; 
 
-
-
-function AddProposal({ contractAddress, contractAbi, voterAddress }) {
+function AddProposal() {
   const [proposalDescription, setProposalDescription] = useState('');
-  const { data: getVoterData, error: getVoterError, isPending: getVoterIsPending } = useReadContract({
+  const { address, isConnected } = useAccount();
+  const toast = useToast();
+
+  
+  // Lire les données du votant pour vérifier s'il est enregistré
+  const { data: voterData, isFetching: isVoterFetching, isError: isVoterError } = useReadContract({
     address: contractAddress,
     abi: contractAbi,
-    functionName: 'getVoter',
-    args: [voterAddress]
+    functionName: 'GetVoter',
+    args: [address],
   });
 
-  const handleProposalSubmission = async () => {
-    if (!proposalDescription.trim()) return;
+  // Écrire une nouvelle proposition
+  const { writeContract: addProposal, isLoading: isProposalAdding, error: proposalAddError } = useWriteContract({
+    address: contractAddress,
+    abi: contractAbi,
+    functionName: 'AddProposal',
+    args: [proposalDescription],
+    onSuccess(data) {
+      toast({
+        title: "Proposal added successfully.",
+        description: `Transaction hash: ${data.hash}`,
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+      setProposalDescription(''); 
+    },
+    onError(error) {
+      toast({
+        title: "Failed to add proposal.",
+        description: error.message,
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    },
+  });
 
-    try {
-      const contract = new ethers.Contract(contractAddress, contractAbi, signer);
-      const transaction = await contract.AddProposal(proposalDescription);
-      console.log('Submitting proposal:', proposalDescription);
-      await transaction.wait();
-      console.log("Proposition submitted");
-    } catch (error) {
-      console.error("Something wrong:", error);
+  const handleProposalSubmission = () => {
+    if (!proposalDescription.trim()) {
+      toast({
+        title: 'Description cannot be empty.',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
     }
+    addProposal();
   };
 
-  if (getVoterIsPending) {
-    return <Text>Loading...</Text>;
+  if (!isConnected) {
+    return <Text>Please connect your wallet.</Text>;
   }
-  if (getVoterError) {
-    return <Text>Error: {getVoterError.message}</Text>;
+
+  if (isVoterFetching) {
+    return <Text>Loading voter data...</Text>;
   }
-  if (!getVoterData || !getVoterData.isRegistered) {
-    return <Text>You're not a voter</Text>;
+
+  if (isVoterError || !voterData?.isRegistered) {
+    return <Text>You're not a registered voter.</Text>;
   }
 
   return (
     <Box>
-      <Text>Add proposal</Text>
+      <Text fontSize="xl" mb="4">Add a New Proposal</Text>
       <Input
-        placeholder='Description'
+        placeholder="Describe your proposal"
         value={proposalDescription}
         onChange={(e) => setProposalDescription(e.target.value)}
+        mb="4"
       />
       <Button
-        colorScheme='teal'
-        size='sm'
+        colorScheme="teal"
         onClick={handleProposalSubmission}
-      >Add my proposal
+        isLoading={isProposalAdding}
+      >
+        Add Proposal
       </Button>
+      {proposalAddError && <Text color="red.500">Error: {proposalAddError.message}</Text>}
     </Box>
   );
 }

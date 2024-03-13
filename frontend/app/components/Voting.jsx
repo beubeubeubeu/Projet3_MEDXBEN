@@ -17,6 +17,7 @@ import { useReadContract, useAccount, useWriteContract, useWaitForTransactionRec
 
 import { parseAbiItem } from 'viem'
 import NextPhaseButton from './NextPhaseButton'
+import AddProposal from './AddProposal'
 
 // import { publicClient } from '../network/client'
 
@@ -81,6 +82,31 @@ const Voting = () => {
         },
     });
 
+    // const { writeContract: addVoterCall, error: addVotererror, isPending: addVoterIsPending } = useWriteContract({
+    //     address: contractAddress,
+    //     abi: contractAbi,
+    //     functionName: 'AddVoter',
+    //     args: [voterAddress],
+    //     onSuccess: () => {
+    //         toast({
+    //             title: "Voter has been added",
+    //             status: "success",
+    //             duration: 3000,
+    //             isClosable: true,
+    //         });
+    //         refetch();
+    //     },
+    //     onError: (error) => {
+    //         toast({
+    //             title: addVotererror.message,
+    //             status: "error",
+    //             duration: 3000,
+    //             isClosable: true,
+    //         });
+    //     },
+    // });
+
+    
     // Add voter call
     const addVoter = async() => {
         addVoterCall({
@@ -108,6 +134,11 @@ const Voting = () => {
                 <Button disabled={addVoterIsPending} onClick={addVoter}>{addVoterIsPending ? 'Confirming...' : 'Add voter'} </Button>
             </Flex>
             <NextPhaseButton workflowStatus={getWorkflowStatusData || 0} onSuccessfulNextPhase={refetchWorkflowStatus} />
+
+             
+  <AddProposal contractAddress={contractAddress} contractAbi={contractAbi} voterAddress={address} />
+
+
         </Box>
     )
 }
