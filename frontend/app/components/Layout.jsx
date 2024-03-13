@@ -20,11 +20,6 @@ const Layout = ({ children }) => {
       >
         {children}
       </Flex>
-      <AddProposal/>
-      <Flex grow="1"
-        p="2rem">
-
-      </Flex>
       <Footer />
     </Flex>
   )
