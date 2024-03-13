@@ -16,6 +16,7 @@ import { contractAddress, contractAbi, workflowStatuses } from '@/constants'
 import { useReadContract, useAccount, useWriteContract, useWaitForTransactionReceipt, useWatchContractEvent } from 'wagmi'
 
 import { parseAbiItem } from 'viem'
+import NextPhaseButton from './NextPhaseButton'
 
 // import { publicClient } from '../network/client'
 
@@ -90,38 +91,6 @@ const Voting = () => {
         })
     }
 
-    const { data: startProposalRegistrationTxhash, error: startProposalRegistrationError, isPending: startProposalRegistrationIsPending, writeContract: startProposalRegistration } = useWriteContract({
-        mutation: {
-            onSuccess: () => {
-                refetchWorkflowStatus();
-                toast({
-                    title: "Proposal registration started",
-                    status: "success",
-                    duration: 3000,
-                    isClosable: true,
-                });
-            },
-            onError: (error) => {
-                toast({
-                    title: startProposalRegistrationError.message,
-                    status: "error",
-                    duration: 3000,
-                    isClosable: true,
-                });
-            },
-        },
-    })
-
-    // Start proposal registration
-    const handleStartProposalRegistration = async() => {
-        console.log('toto')
-        startProposalRegistration({
-            address: contractAddress,
-            abi: contractAbi,
-            functionName: 'StartProposalsRegistering',
-        })
-    }
-
     return (
         <Box
             direction="column"
@@ -138,13 +107,7 @@ const Voting = () => {
                 <Input placeholder='New voter address' onChange={(e) => setVoterAddress(e.target.value)} />
                 <Button disabled={addVoterIsPending} onClick={addVoter}>{addVoterIsPending ? 'Confirming...' : 'Add voter'} </Button>
             </Flex>
-            { workflowStatuses[getWorkflowStatusData] === "Registering voters" ? (
-                <Flex>
-                        <Button colorScheme='teal' size='lg' onClick={handleStartProposalRegistration}>
-                            Start proposal registration
-                        </Button>
-                </Flex>
-            ) : null }
+            <NextPhaseButton workflowStatus={getWorkflowStatusData || 0} onSuccessfulNextPhase={refetchWorkflowStatus} />
         </Box>
     )
 }
