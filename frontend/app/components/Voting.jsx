@@ -1,25 +1,15 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { Box, useToast } from '@chakra-ui/react'
 
-import { Box, Flex, Text, Input, Button, useToast, Heading, Spinner } from '@chakra-ui/react'
+import { contractAddress, contractAbi } from '@/constants'
 
-import {
-    Alert,
-    AlertIcon,
-    AlertTitle,
-    AlertDescription,
-} from '@chakra-ui/react'
+import { useReadContract, useAccount, useWriteContract } from 'wagmi'
 
-import { contractAddress, contractAbi, workflowStatuses } from '@/constants'
-
-import { useReadContract, useAccount, useWriteContract, useWaitForTransactionReceipt, useWatchContractEvent } from 'wagmi'
-
-import { parseAbiItem } from 'viem'
+import WorkflowStatus from './WorkflowStatus'
 import NextPhaseButton from './NextPhaseButton'
+import AddVoter from './AddVoter'
 import AddProposal from './AddProposal'
-
-// import { publicClient } from '../network/client'
 
 const Voting = () => {
 
@@ -27,94 +17,46 @@ const Voting = () => {
 
     const toast = useToast();
 
-    const [voterAddress, setVoterAddress] = useState('');
-
     // Is owner
-    function isOwner() {
-        if (!isConnected) {
-            return false
-        } else {
-            const { data: ownerAddress } = useContractRead({
-            address: contractAddress,
-            abi: contractAbi,
-            functionName: 'owner',
-            })
-            return ownerAddress === address;
-        }
-    }
+    // function isOwner() {
+    //     if (!isConnected) {
+    //         return false
+    //     } else {
+    //         const { data: ownerAddress } = useContractRead({
+    //         address: contractAddress,
+    //         abi: contractAbi,
+    //         functionName: 'owner',
+    //         })
+    //         return ownerAddress === address;
+    //     }
+    // }
 
     // Get voter data (not implemented yet)
-    const { data: getVoterData, error: getVoterError, isPending: getVoterIsPending, refetch } = useReadContract({
-        address: contractAddress,
-        abi: contractAbi,
-        functionName: 'getVoter',
-        account: address,
-        args: [voterAddress]
-    })
+    // const { data: getVoterData, error: getVoterError, isPending: getVoterIsPending, refetch } = useReadContract({
+    //     address: contractAddress,
+    //     abi: contractAbi,
+    //     functionName: 'getVoter',
+    //     account: address,
+    //     args: [voterAddress]
+    // })
 
     // Get workflow status
-    const { data: getWorkflowStatusData, error: getWorkflowStatusError, isPending: getWorkflowStatusIsPending, refetch: refetchWorkflowStatus } = useReadContract({
+    const { data: getWorkflowStatusData, isPending: getWorkflowStatusIsPending, refetch: refetchWorkflowStatus } = useReadContract({
         address: contractAddress,
         abi: contractAbi,
         functionName: 'workflowStatus',
         account: address
     })
 
-    // Add voter
-    const { data: addVoterTxhash, error: addVotererror, isPending: addVoterIsPending, writeContract: addVoterCall } = useWriteContract({
-        mutation: {
-            onSuccess: () => {
-                toast({
-                    title: "Voter has been added",
-                    status: "success",
-                    duration: 3000,
-                    isClosable: true,
-                });
-            },
-            onError: (error) => {
-                toast({
-                    title: addVotererror.message,
-                    status: "error",
-                    duration: 3000,
-                    isClosable: true,
-                });
-            },
-        },
-    });
-
-    
-    // Add voter call
-    const addVoter = async() => {
-        addVoterCall({
-            address: contractAddress,
-            abi: contractAbi,
-            functionName: 'AddVoter',
-            args: [voterAddress],
-        })
-    }
-
     return (
         <Box
             direction="column"
             width="100%"
         >
-            <Flex width="100%">
-                {getWorkflowStatusIsPending ? (
-                        <Spinner />
-                    ) : (
-                        <Text><b>Workflow status :</b> {workflowStatuses[getWorkflowStatusData]}</Text>
-                )}
-            </Flex>
-            <Flex>
-                <Input placeholder='New voter address' onChange={(e) => setVoterAddress(e.target.value)} />
-                <Button disabled={addVoterIsPending} onClick={addVoter}>{addVoterIsPending ? 'Confirming...' : 'Add voter'} </Button>
-            </Flex>
+            <WorkflowStatus pending={getWorkflowStatusIsPending} workflowStatus={getWorkflowStatusData || 0}/>
             <NextPhaseButton workflowStatus={getWorkflowStatusData || 0} onSuccessfulNextPhase={refetchWorkflowStatus} />
-
-             
-  <AddProposal contractAddress={contractAddress} contractAbi={contractAbi} voterAddress={address} />
-
-
+            <AddVoter />
+            <AddProposal contractAddress={contractAddress} contractAbi={contractAbi} voterAddress={address} />
         </Box>
     )
 }

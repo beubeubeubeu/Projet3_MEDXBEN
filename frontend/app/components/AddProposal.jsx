@@ -74,7 +74,7 @@ function AddProposal() {
 
   return (
     <Box>
-      <Text fontSize="xl" mb="4">Add a New Proposal</Text>
+      <Text fontSize="xl" mb="4">Add a new proposal</Text>
       <Input
         placeholder="Describe your proposal"
         value={proposalDescription}

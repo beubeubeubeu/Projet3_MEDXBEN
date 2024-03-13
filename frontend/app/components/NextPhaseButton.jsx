@@ -8,7 +8,7 @@ import { currentPhaseNextPhase, contractAbi, contractAddress } from '@/constants
 
 const NextPhaseButton = ({workflowStatus, onSuccessfulNextPhase}) => {
 
-  const { data: setNextPhaseTxhash, error: setNextPhaseError, isPending: setNextPhaseIsPending, writeContract: setNextPhase } = useWriteContract({
+  const { error: setNextPhaseError, writeContract: setNextPhase } = useWriteContract({
     mutation: {
         onSuccess: () => {
             onSuccessfulNextPhase();
