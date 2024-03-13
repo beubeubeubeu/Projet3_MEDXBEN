@@ -82,30 +82,6 @@ const Voting = () => {
         },
     });
 
-    // const { writeContract: addVoterCall, error: addVotererror, isPending: addVoterIsPending } = useWriteContract({
-    //     address: contractAddress,
-    //     abi: contractAbi,
-    //     functionName: 'AddVoter',
-    //     args: [voterAddress],
-    //     onSuccess: () => {
-    //         toast({
-    //             title: "Voter has been added",
-    //             status: "success",
-    //             duration: 3000,
-    //             isClosable: true,
-    //         });
-    //         refetch();
-    //     },
-    //     onError: (error) => {
-    //         toast({
-    //             title: addVotererror.message,
-    //             status: "error",
-    //             duration: 3000,
-    //             isClosable: true,
-    //         });
-    //     },
-    // });
-
     
     // Add voter call
     const addVoter = async() => {

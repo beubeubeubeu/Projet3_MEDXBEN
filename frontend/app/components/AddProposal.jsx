@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { Box, Button, Input, Text, useToast } from '@chakra-ui/react';
 import { useAccount, useReadContract, useWriteContract } from 'wagmi';
-import { contractAddress, contractAbi } from '@/constants'; 
+import { contractAddress, contractAbi } from '@/constants';
 
 function AddProposal() {
   const [proposalDescription, setProposalDescription] = useState('');
   const { address, isConnected } = useAccount();
   const toast = useToast();
 
-  
+
   // Lire les données du votant pour vérifier s'il est enregistré
   const { data: voterData, isFetching: isVoterFetching, isError: isVoterError } = useReadContract({
     address: contractAddress,
@@ -19,29 +19,27 @@ function AddProposal() {
 
   // Écrire une nouvelle proposition
   const { writeContract: addProposal, isLoading: isProposalAdding, error: proposalAddError } = useWriteContract({
-    address: contractAddress,
-    abi: contractAbi,
-    functionName: 'AddProposal',
-    args: [proposalDescription],
-    onSuccess(data) {
-      toast({
-        title: "Proposal added successfully.",
-        description: `Transaction hash: ${data.hash}`,
-        status: "success",
-        duration: 9000,
-        isClosable: true,
-      });
-      setProposalDescription(''); 
-    },
-    onError(error) {
-      toast({
-        title: "Failed to add proposal.",
-        description: error.message,
-        status: "error",
-        duration: 9000,
-        isClosable: true,
-      });
-    },
+    mutation: {
+      onSuccess(data) {
+        toast({
+          title: "Proposal added successfully.",
+          description: `Transaction hash: ${data.hash}`,
+          status: "success",
+          duration: 9000,
+          isClosable: true,
+        });
+        setProposalDescription('');
+      },
+      onError(error) {
+        toast({
+          title: "Failed to add proposal.",
+          description: error.message,
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
+      },
+    }
   });
 
   const handleProposalSubmission = () => {
@@ -54,20 +52,25 @@ function AddProposal() {
       });
       return;
     }
-    addProposal();
+    addProposal({
+      address: contractAddress,
+      abi: contractAbi,
+      functionName: "AddProposal",
+      args: [proposalDescription]
+    });
   };
 
-  if (!isConnected) {
-    return <Text>Please connect your wallet.</Text>;
-  }
+  // if (!isConnected) {
+  //   return <Text>Please connect your wallet.</Text>;
+  // }
 
-  if (isVoterFetching) {
-    return <Text>Loading voter data...</Text>;
-  }
+  // if (isVoterFetching) {
+  //   return <Text>Loading voter data...</Text>;
+  // }
 
-  if (isVoterError || !voterData?.isRegistered) {
-    return <Text>You're not a registered voter.</Text>;
-  }
+  // if (isVoterError || !voterData?.isRegistered) {
+  //   return <Text>You're not a registered voter.</Text>;
+  // }
 
   return (
     <Box>
