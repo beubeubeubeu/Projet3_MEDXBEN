@@ -319,3 +319,11 @@ export const workflowStatuses = {
         4 : "Voting session ended",
         5 : "Votes tallied"
 };
+export const currentPhaseNextPhase = {
+    0 : { btnText: "Start proposal registration", message: "Proposal registration started", function: "StartProposalsRegistering" },
+    1 : { btnText: "End proposal registration", message: "Proposal registration ended", function: "EndProposalsRegistering" },
+    2 : { btnText: "Start voting session", message: "Voting session started", function: "StartVotingSession" },
+    3 : { btnText: "End voting session", message: "Voting session ended", function: "EndVotingSession" },
+    4 : { btnText: "Tally votes", message: "Votes tallied", function: "TallyVotes" },
+    5 : { btnText: "Votes tallied", message: "Votes tallied", function: "TallyVotes" },
+}
