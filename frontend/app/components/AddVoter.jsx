@@ -2,13 +2,17 @@ import React from 'react'
 
 import { useState } from 'react'
 
-import { Box, Button, Flex, Input, Text } from '@chakra-ui/react'
+import { Box, Button, Flex, Input, Text, useToast } from '@chakra-ui/react'
 
 import { useWriteContract } from 'wagmi'
+
+import { contractAddress, contractAbi } from '@/constants'
 
 const AddVoter = () => {
 
   const [voterAddress, setVoterAddress] = useState('');
+
+  const toast = useToast();
 
   // Add voter hook
   const { error: addVotererror, isPending: addVoterIsPending, writeContract: addVoterCall } = useWriteContract({
