@@ -54,8 +54,15 @@ const Voting = () => {
             width="100%"
         >
             <WorkflowStatus pending={getWorkflowStatusIsPending} workflowStatus={getWorkflowStatusData || 0}/>
+            <br />
             <NextPhaseButton workflowStatus={getWorkflowStatusData || 0} onSuccessfulNextPhase={refetchWorkflowStatus} />
+            <br />
+            <br />
             <AddVoter />
+            <br />
+            <hr />
+            <br />
+            <br />
             <AddProposal contractAddress={contractAddress} contractAbi={contractAbi} voterAddress={address} />
         </Box>
     )

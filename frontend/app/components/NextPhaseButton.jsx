@@ -40,7 +40,7 @@ const NextPhaseButton = ({workflowStatus, onSuccessfulNextPhase}) => {
 
   return (
     <Button
-      colorScheme='teal'
+      colorScheme='purple'
       size='lg'
       onClick={handleSetNextPhase}
       isDisabled={workflowStatus === 5}

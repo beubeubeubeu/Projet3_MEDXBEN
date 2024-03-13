@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, Button, Input, Text, useToast } from '@chakra-ui/react';
+import { Box, Button, Input, Text, useToast, Flex } from '@chakra-ui/react';
 import { useAccount, useReadContract, useWriteContract } from 'wagmi';
 import { contractAddress, contractAbi } from '@/constants';
 
@@ -75,20 +75,21 @@ function AddProposal() {
   return (
     <Box>
       <Text fontSize="xl" mb="4">Add a new proposal</Text>
-      <Input
-        placeholder="Describe your proposal"
-        value={proposalDescription}
-        onChange={(e) => setProposalDescription(e.target.value)}
-        mb="4"
-      />
-      <Button
-        colorScheme="teal"
-        onClick={handleProposalSubmission}
-        isLoading={isProposalAdding}
-      >
-        Add Proposal
-      </Button>
-      {proposalAddError && <Text color="red.500">Error: {proposalAddError.message}</Text>}
+      <Flex>
+        <Input
+          placeholder="Describe your proposal"
+          value={proposalDescription}
+          onChange={(e) => setProposalDescription(e.target.value)}
+          mb="4"
+        />
+        <Button
+          onClick={handleProposalSubmission}
+          isLoading={isProposalAdding}
+        >
+          Add Proposal
+        </Button>
+        { proposalAddError && <Text color="red.500">Error: {proposalAddError.message}</Text> }
+      </Flex>
     </Box>
   );
 }
