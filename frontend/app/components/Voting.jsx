@@ -10,14 +10,25 @@ import WorkflowStatus from './WorkflowStatus'
 import NextPhaseButton from './NextPhaseButton'
 import AddVoter from './AddVoter'
 import AddProposal from './AddProposal'
+<<<<<<< HEAD
 import WinningProposal from './WinningProposal'
+=======
+
+
+// import { publicClient } from '../network/client'
+>>>>>>> e50d72d (ajout events)
 
 const Voting = () => {
-
+    const [refreshTrigger, setRefreshTrigger] = useState(false); ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
     const { address, isConnected } = useAccount();
 
     const toast = useToast();
 
+<<<<<<< HEAD
+=======
+    const [voterAddress, setVoterAddress] = useState('');
+    
+>>>>>>> e50d72d (ajout events)
     // Is owner
     // function isOwner() {
     //     if (!isConnected) {
@@ -49,6 +60,7 @@ const Voting = () => {
         account: address
     })
 
+<<<<<<< HEAD
     // Get winning proposal ID
     const { data: getWinningProposalID, isPending: getWinningProposalIsPending, refetch: refetchWinningProposal } = useReadContract({
         address: contractAddress,
@@ -56,12 +68,54 @@ const Voting = () => {
         functionName: 'winningProposalID',
         account: address
     })
+=======
+    // Add voter
+    const { data: addVoterTxhash, error: addVotererror, isPending: addVoterIsPending, writeContract: addVoterCall } = useWriteContract({
+        mutation: {
+            onSuccess: () => {
+                toast({
+                    title: "Voter has been added",
+                    status: "success",
+                    duration: 3000,
+                    isClosable: true,
+                    
+                });
+            },
+            onError: (error) => {
+                toast({
+                    title: addVotererror.message,
+                    status: "error",
+                    duration: 3000,
+                    isClosable: true,
+                });
+            },
+        },
+    });
+
+    
+    // Add voter call
+    const addVoter = async() => {
+        
+        addVoterCall({
+            address: contractAddress,
+            abi: contractAbi,
+            functionName: 'AddVoter',
+            args: [voterAddress],
+            onSuccess: () => {
+                const triggerRefresh = () => {
+                    setRefreshTrigger(prev => !prev); // Bascule l'état pour déclencher un effet
+                  } // Change refreshTrigger pour déclencher une mise à jour //////////////////////////////////////////////////////////////////////////////////////////////////
+              }
+        })
+    }
+>>>>>>> e50d72d (ajout events)
 
     return (
         <Box
             direction="column"
             width="100%"
         >
+<<<<<<< HEAD
             <WinningProposal workflowStatus={getWorkflowStatus || 0} winningProposalID={getWinningProposalID || 0}/>
             <br />
             <br />
@@ -76,6 +130,25 @@ const Voting = () => {
             <br />
             <br />
             <AddProposal contractAddress={contractAddress} contractAbi={contractAbi} voterAddress={address} />
+=======
+            <Flex width="100%">
+                {getWorkflowStatusIsPending ? (
+                        <Spinner />
+                    ) : (
+                        <Text><b>Workflow status :</b> {workflowStatuses[getWorkflowStatusData]}</Text>
+                )}
+            </Flex>
+            <Flex>
+                <Input placeholder='New voter address' onChange={(e) => setVoterAddress(e.target.value)} />
+                <Button disabled={addVoterIsPending} onClick={addVoter}>{addVoterIsPending ? 'Confirming...' : 'Add voter'} </Button>
+            </Flex>
+            <NextPhaseButton workflowStatus={getWorkflowStatusData || 0} onSuccessfulNextPhase={refetchWorkflowStatus} />
+
+            <AddProposal contractAddress={contractAddress} contractAbi={contractAbi} voterAddress={address} refreshTrigger={refreshTrigger} />      
+  {/* <AddProposal contractAddress={contractAddress} contractAbi={contractAbi} voterAddress={address} /> */}
+
+
+>>>>>>> e50d72d (ajout events)
         </Box>
     )
 }

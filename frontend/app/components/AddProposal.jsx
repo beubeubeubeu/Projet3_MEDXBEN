@@ -9,6 +9,12 @@ function AddProposal() {
   const toast = useToast();
 
 
+  useEffect(() => {
+    // Vous pouvez ici rappeler une fonction pour rafraîchir les données dont a besoin AddProposal, //////////////////////////////////////////////////////////////////////////////
+    // par exemple, vérifier à nouveau si l'utilisateur est un votant enregistré.
+    refetchVoterData();
+  }, [refreshTrigger]);
+
   // Lire les données du votant pour vérifier s'il est enregistré
   const { data: voterData, isFetching: isVoterFetching, isError: isVoterError } = useReadContract({
     address: contractAddress,
