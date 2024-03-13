@@ -1,12 +1,12 @@
 import React from 'react'
 
-import { Button } from '@chakra-ui/react'
+import { Button, Spinner } from '@chakra-ui/react'
 
 import { useWriteContract } from 'wagmi'
 
 import { currentPhaseNextPhase, contractAbi, contractAddress } from '@/constants'
 
-const NextPhaseButton = ({workflowStatus, onSuccessfulNextPhase}) => {
+const NextPhaseButton = ({workflowStatus, onSuccessfulNextPhase, pending}) => {
 
   const { error: setNextPhaseError, writeContract: setNextPhase } = useWriteContract({
     mutation: {
@@ -45,7 +45,7 @@ const NextPhaseButton = ({workflowStatus, onSuccessfulNextPhase}) => {
       onClick={handleSetNextPhase}
       isDisabled={workflowStatus === 5}
     >
-      { currentPhaseNextPhase[workflowStatus].btnText }
+      { pending ? <Spinner /> : currentPhaseNextPhase[workflowStatus].btnText }
     </Button>
   )
 }
