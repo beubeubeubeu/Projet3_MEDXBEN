@@ -1,4 +1,6 @@
-import { useState } from 'react';
+'use client';
+
+import { useState, useEffect } from 'react';
 import { Box, Button, Input, Text, useToast, Flex } from '@chakra-ui/react';
 import { useAccount, useReadContract, useWriteContract } from 'wagmi';
 import { contractAddress, contractAbi } from '@/constants';
@@ -8,14 +10,6 @@ function AddProposal() {
   const { address, isConnected } = useAccount();
   const toast = useToast();
 
-
-  useEffect(() => {
-    // Vous pouvez ici rappeler une fonction pour rafraîchir les données dont a besoin AddProposal, //////////////////////////////////////////////////////////////////////////////
-    // par exemple, vérifier à nouveau si l'utilisateur est un votant enregistré.
-    refetchVoterData();
-  }, [refreshTrigger]);
-
-  // Lire les données du votant pour vérifier s'il est enregistré
   const { data: voterData, isFetching: isVoterFetching, isError: isVoterError } = useReadContract({
     address: contractAddress,
     abi: contractAbi,

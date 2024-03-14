@@ -8,7 +8,7 @@ import { useWriteContract } from 'wagmi'
 
 import { contractAddress, contractAbi } from '@/constants'
 
-const AddVoter = () => {
+const AddVoter = ({getEvents}) => {
 
   const [voterAddress, setVoterAddress] = useState('');
 
