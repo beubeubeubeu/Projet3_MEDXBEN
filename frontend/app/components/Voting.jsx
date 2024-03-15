@@ -1,45 +1,85 @@
+
+//     // Is owner
+//     // function isOwner() {
+//     //     if (!isConnected) {
+//     //         return false
+//     //     } else {
+//     //         const { data: ownerAddress } = useContractRead({
+//     //         address: contractAddress,
+//     //         abi: contractAbi,
+//     //         functionName: 'owner',
+//     //         })
+//     //         return ownerAddress === address;
+//     //     }
+//     // }
+
+//     // Get voter data (not implemented yet)
+//     // const { data: getVoterData, error: getVoterError, isPending: getVoterIsPending, refetch } = useReadContract({
+//     //     address: contractAddress,
+//     //     abi: contractAbi,
+//     //     functionName: 'getVoter',
+//     //     account: address,
+//     //     args: [voterAddress]
+//     // })
+
 'use client'
+import React, { useState, useEffect } from 'react';
 
-import { Box, useToast } from '@chakra-ui/react'
+import {
+    Box,
+    useToast,
+    Step,
+    Stepper,
+    StepIndicator,
+    StepNumber,
+    StepStatus,
+    StepSeparator,
+    StepIcon,
+    StepTitle,
+    StepDescription,
+    useSteps,
+} from '@chakra-ui/react';
 
-import { contractAddress, contractAbi } from '@/constants'
-
-import { useReadContract, useAccount, useWriteContract } from 'wagmi'
-
+import { useReadContract, useAccount } from 'wagmi';
+import { contractAddress, contractAbi } from '@/constants';
 import { publicClient } from '@/network/client'
-
-import { useState, useEffect } from 'react'
+import WinningProposal from './WinningProposal';
+import WorkflowStatusComponent from './WorkflowStatus';
+import NextPhaseButton from './NextPhaseButton';
+import AddVoter from './AddVoter';
+import AddProposal from './AddProposal';
+import Events from './Events'
 import { parseAbiItem } from 'viem'
 
-import WorkflowStatus from './WorkflowStatus'
-import NextPhaseButton from './NextPhaseButton'
-import AddVoter from './AddVoter'
-import AddProposal from './AddProposal'
-import WinningProposal from './WinningProposal'
-import Events from './Events'
-// import { getEventParameters } from 'viem/_types/actions/getContract'
-// import { getEventSelector } from 'viem'
-
+const workflowSteps = [
+    { title: 'Registering Voters' },
+    { title: 'Proposals Registration Started'},
+    { title: 'Proposals Registration Ended'},
+    { title: 'Voting Session Started'},
+    { title: 'Voting Session Ended'},
+    { title: 'Votes Tallied'},
+];
 
 const Voting = () => {
-    const { address, isConnected } = useAccount();
-    const [events, setEvents] = useState([])
+    const { address } = useAccount();
     const toast = useToast();
+    const [events, setEvents] = useState([]);
 
-    // Is owner
-    // function isOwner() {
-    //     if (!isConnected) {
-    //         return false
-    //     } else {
-    //         const { data: ownerAddress } = useContractRead({
-    //         address: contractAddress,
-    //         abi: contractAbi,
-    //         functionName: 'owner',
-    //         })
-    //         return ownerAddress === address;
-    //     }
-    // }
-
+    // Récupère le statut actuel du workflow
+    const { data: getWorkflowStatus } = useReadContract({
+        address: contractAddress,
+        abi: contractAbi,
+        functionName: 'workflowStatus',
+        watch: true,
+    });
+    const { activeStep, setActiveStep } = useSteps({
+        initialStep: 0,
+    });
+    useEffect(() => {
+        if (typeof getWorkflowStatus !== 'undefined') {
+            setActiveStep(getWorkflowStatus);
+        }
+    }, [getWorkflowStatus, setActiveStep]);
     // Get voter data (not implemented yet)
     // const { data: getVoterData, error: getVoterError, isPending: getVoterIsPending, refetch } = useReadContract({
     //     address: contractAddress,
@@ -48,14 +88,6 @@ const Voting = () => {
     //     account: address,
     //     args: [voterAddress]
     // })
-
-    // Get workflow status
-    const { data: getWorkflowStatus, isPending: getWorkflowStatusIsPending, refetch: refetchWorkflowStatus } = useReadContract({
-        address: contractAddress,
-        abi: contractAbi,
-        functionName: 'workflowStatus',
-        account: address
-    })
 
     // Get winning proposal ID
     const { data: getWinningProposalID, isPending: getWinningProposalIsPending, refetch: refetchWinningProposal } = useReadContract({
@@ -71,7 +103,6 @@ const Voting = () => {
         functionName: 'AddVoter',
         account: address
     })
-
     const getEvents = async () => {
         const AddVoterEvents = await publicClient.getLogs({
             address: contractAddress,
@@ -88,10 +119,10 @@ const Voting = () => {
             // du premier bloc
             fromBlock: 0n,
             // jusqu'au dernier
-            toBlock: 'latest' 
+            toBlock: 'latest'
         })
         console.log("WorkflowStatusChangeEvent", WorkflowStatusChangeEvent);
-        
+
         const ProposalRegisteredEvent = await publicClient.getLogs({
             address: contractAddress,
             event: parseAbiItem('event ProposalRegistered(uint256 proposalId)'),
@@ -99,7 +130,7 @@ const Voting = () => {
             fromBlock: 0n,
             // jusqu'au dernier
             toBlock: 'latest' // Pas besoin valeur par défaut
-            
+
         })
 
         const VotedEvent = await publicClient.getLogs({
@@ -113,68 +144,54 @@ const Voting = () => {
 
         const combinedEvents = [...AddVoterEvents, ...WorkflowStatusChangeEvent, ...ProposalRegisteredEvent, ...VotedEvent].map(event => {
             let eventData = {
-                type: 'Unknown', 
+                type: 'Unknown',
                 blockNumber: Number(event.blockNumber),
             };
-        
-            switch (event.eventName) { 
+
+            function shortenAddress(address) {
+                return `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
+            }
+
+            function shortenHash(hash) {
+                return `${hash.substring(0, 6)}...${hash.substring(hash.length - 4)}`;
+            }
+
+            switch (event.eventName) {
                 case 'VoterRegistered':
                     eventData.type = 'AddVoter';
                     eventData.description = "Voter Registered";
-                    if (event.args.voterAddress) {
-                        const address = event.args.voterAddress;
-                        eventData.address = `${address.substring(0, 4)}...${address.substring(address.length - 4)}`;
-                    }
+                    eventData.address = shortenAddress(event.args.voterAddress);
+                    eventData.hash = shortenHash(event.transactionHash);
                     break;
+
                 case 'WorkflowStatusChange':
                     eventData.type = 'StatusChange';
-                    eventData.previousStatus = event.args.previousStatus; 
-                    eventData.newStatus = event.args.newStatus; 
+                    eventData.previousStatus = event.args.previousStatus;
+                    eventData.newStatus = event.args.newStatus;
                     eventData.description = `Status changed from ${eventData.previousStatus} to ${eventData.newStatus}`;
-                    if (event.transactionHash) {
-                        const hash = event.transactionHash;
-                        eventData.hash = `${hash.substring(0, 4)}...${hash.substring(hash.length - 4)}`;
-                    }
-                    
-                    // eventData.transactionHash = event.transactionHash; 
-                    
+                    eventData.hash = shortenHash(event.transactionHash);
                     break;
+
                 case 'ProposalRegistered':
                     eventData.type = 'AddProposal';
-                    eventData.proposalId = event.args.proposalId; 
+                    eventData.proposalId = event.args.proposalId;
                     eventData.description = `Proposal ID: ${eventData.proposalId} registered`;
-                    eventData.transactionHash = event.transactionHash; 
+                    eventData.hash = shortenHash(event.transactionHash);
                     break;
+
                 case 'Voted':
                     eventData.type = 'Vote';
-                    eventData.voter = event.args.voter; 
-                    eventData.proposalId = event.args.proposalId; 
+                    eventData.voter = event.args.voter;
+                    eventData.proposalId = event.args.proposalId;
                     eventData.description = `Voter ${eventData.voter} voted for proposal ${eventData.proposalId}`;
-                    eventData.transactionHash = event.transactionHash; 
+                    eventData.hash = shortenHash(event.transactionHash);
                     break;
-                
+
             }
-        
+
             return eventData;
         });
-        
 
-
-
-
-        // const combinedEvents = AddVoterEvents.map((event) => ({
-        //     type: 'AddVoter',
-        //     address: event.args.account,
-        //     // amount: event.args.amount,
-        //     blockNumber: Number(event.blockNumber)
-        // })).concat(ProposalRegisteredEvent.map((event) => ({
-        //     type: 'AddProposal',
-        //     address: event.args.account,
-        //     // amount: event.args.amount,
-        //     blockNumber: Number(event.blockNumber)
-        // })))
-
-        // sort by value
         combinedEvents.sort(function (a, b) {
             return b.blockNumber - a.blockNumber;
         });
@@ -182,43 +199,61 @@ const Voting = () => {
         setEvents(combinedEvents)
     }
 
-
-
     useEffect(() => {
-    const getAllEvents = async () => {
-        if (address !== 'undefined') {
-            await getEvents();
+        const getAllEvents = async () => {
+            if (address !== 'undefined') {
+                await getEvents();
+            }
         }
-    }
-    getAllEvents();
+        getAllEvents();
     }, [address])
 
     return (
-    <Box
-        direction="column"
-        width="100%"
-    >
-        <WinningProposal workflowStatus={getWorkflowStatus || 0} winningProposalID={getWinningProposalID || 0} />
-        <br />
-        <br />
-        <WorkflowStatus pending={getWorkflowStatusIsPending} workflowStatus={getWorkflowStatus || 0} />
-        <br />
-        <NextPhaseButton pending={getWorkflowStatusIsPending} workflowStatus={getWorkflowStatus || 0} onSuccessfulNextPhase={refetchWorkflowStatus} />
-        <br />
-        <br />
-        <AddVoter refetch={refetchAddVoter} getEvents={getEvents} />
-        <br />
-        <hr />
-        <br />
-        <br />
-        <AddProposal contractAddress={contractAddress} contractAbi={contractAbi} voterAddress={address} />
-        <br />
-        <hr />
-        <br />
-        <br />
-        <Events events={events} />
-    </Box>
-)
-}
+        <Box direction="column" width="100%">
+            <WinningProposal workflowStatus={getWorkflowStatus || 0} winningProposalID={0} />
+            <br />
+            <br />
+            <WorkflowStatusComponent workflowStatus={getWorkflowStatus || 0} />
+            <br />
+            <NextPhaseButton workflowStatus={getWorkflowStatus || 0} onSuccessfulNextPhase={getEvents} />
+            <br />
+            <br />
+            <br />
+            <br />
+            {/* Intégration du Stepper */}
+            <Box width="95%" m="auto" borderWidth='1px' borderRadius='lg' boxShadow='lg' p='6' rounded='md' bg='gray.50'>
+            <Stepper index={activeStep}>
+                {workflowSteps.map((step, index) => (
+                    <Step key={index}>
+                        <StepIndicator>
+                            <StepStatus
+                                complete={<StepIcon />}
+                                incomplete={<StepNumber>{index + 1}</StepNumber>}
+                                active={<StepNumber>{index + 1}</StepNumber>}
+                            />
+                        </StepIndicator>
+                        <Box flexShrink='2'ml={1} mr={1}>
+                            <StepTitle fontSize="xs" >{step.title}</StepTitle>
+                           
+                        </Box>
+                    </Step>
+                ))}
+            </Stepper>
+            </Box>
+            <br />
+            <AddVoter />
+            <br />
+            <hr />
+            <br />
+            <br />
+            <AddProposal contractAddress={contractAddress} contractAbi={contractAbi} />
+            <br />
+            <hr />
+            <br />
+            <br />
+            <Events events={events} />
+        </Box>
+    );
+};
 
-export default Voting
+export default Voting;

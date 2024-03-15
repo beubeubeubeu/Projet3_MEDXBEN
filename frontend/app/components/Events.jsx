@@ -11,8 +11,10 @@ import {
     Th,
     Thead,
     Tr,
+    Button,
+    Center
 } from '@chakra-ui/react';
-import { Button, ButtonGroup } from '@chakra-ui/react'
+
 
 const getStatusDescription = (status) => {
     switch (status) {
@@ -36,10 +38,14 @@ const getStatusDescription = (status) => {
 const Events = ({ events }) => {
     return (
         <>
-            <Heading as='h2' size='xl' mt="2rem" mb='1rem'>
-                Events
-            </Heading>
-            {events.length > 0 ? (
+            <Center bg='gray.50' h='50px' width="95%" m="auto" borderWidth='1px' borderRadius='lg' boxShadow='lg' p='6' rounded='md'>
+                <Heading as='h2' size='xl' mt="1rem" mb='1rem'>
+                    Events
+                </Heading>
+        </Center >
+       <br/>
+        {
+            events.length > 0 ? (
                 <TableContainer>
                     <Table variant='simple'>
                         <Thead>
@@ -53,20 +59,20 @@ const Events = ({ events }) => {
                         <Tbody>
                             {events.map((event, index) => (
                                 <Tr key={index}>
-                                 {/* {crypto.randomUUID()} */}
+                                    {/* {crypto.randomUUID()} */}
                                     <Td>
-                                        <Badge colorScheme={event.type === 'AddProposal' ? 'green' : event.type === 'Vote' ? 'blue' : event.type === 'AddVoter' ? 'blue' : event.type === 'StatusChange' ? 'purple' :'red'}>
+                                        <Badge colorScheme={event.type === 'AddProposal' ? 'green' : event.type === 'Vote' ? 'blue' : event.type === 'AddVoter' ? 'blue' : event.type === 'StatusChange' ? 'purple' : 'red'}>
                                             {event.type}
                                         </Badge>
                                     </Td>
-                                    <Td>
+                                    <Td fontSize="xs" >
                                         {event.address ? `Address: ${event.address}` : ''}
                                         {event.proposalId ? ` Proposal ID: ${event.proposalId}` : ''}
                                         {event.newStatus !== undefined ? `New Status: ${getStatusDescription(event.newStatus)}` : ''}
                                     </Td>
-                                    <Td>{event.description}</Td>
-                                    <Td><Button colorScheme='blue'>{event.transactionHash ? `Hash: ${event.transactionHash}` : ''}</Button></Td>
-                                    
+                                    <Td fontSize="xs">{event.description}</Td>
+                                    <Td><Button colorScheme='gray' size="xs">{event.hash ? `Hash: ${event.hash}` : ''}</Button></Td>
+
                                 </Tr>
                             ))}
                         </Tbody>
@@ -77,7 +83,8 @@ const Events = ({ events }) => {
                     <AlertIcon />
                     No events found.
                 </Alert>
-            )}
+            )
+        }
         </>
     );
 };
