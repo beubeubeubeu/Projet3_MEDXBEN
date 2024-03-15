@@ -82,7 +82,7 @@ const Voting = () => {
             setActiveStep(getWorkflowStatus);
         }
     }, [getWorkflowStatus, setActiveStep]);
-    
+
     // Get voter data (not implemented yet)
     // const { data: getVoterData, error: getVoterError, isPending: getVoterIsPending, refetch } = useReadContract({
     //     address: contractAddress,
@@ -110,38 +110,30 @@ const Voting = () => {
         const AddVoterEvents = await publicClient.getLogs({
             address: contractAddress,
             event: parseAbiItem('event VoterRegistered(address voterAddress)'),
-            // du premier bloc
             fromBlock: 0n,
-            // jusqu'au dernier
-            toBlock: 'latest' // Pas besoin valeur par défaut
+            toBlock: 'latest' 
         })
 
         const WorkflowStatusChangeEvent = await publicClient.getLogs({
             address: contractAddress,
             event: parseAbiItem('event WorkflowStatusChange(uint8 previousStatus, uint8 newStatus)'),
-            // du premier bloc
             fromBlock: 0n,
-            // jusqu'au dernier
             toBlock: 'latest'
         })
 
         const ProposalRegisteredEvent = await publicClient.getLogs({
             address: contractAddress,
             event: parseAbiItem('event ProposalRegistered(uint256 proposalId)'),
-            // du premier bloc
             fromBlock: 0n,
-            // jusqu'au dernier
-            toBlock: 'latest' // Pas besoin valeur par défaut
+            toBlock: 'latest'
 
         })
 
         const VotedEvent = await publicClient.getLogs({
             address: contractAddress,
             event: parseAbiItem('event Voted(address voter, uint256 proposalId)'),
-            // du premier bloc
             fromBlock: 0n,
-            // jusqu'au dernier
-            toBlock: 'latest' // Pas besoin valeur par défaut
+            toBlock: 'latest'
         })
 
         const combinedEvents = [...AddVoterEvents, ...WorkflowStatusChangeEvent, ...ProposalRegisteredEvent, ...VotedEvent].map(event => {
