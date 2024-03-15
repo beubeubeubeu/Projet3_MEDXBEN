@@ -81,17 +81,17 @@ const Voting = () => {
             // jusqu'au dernier
             toBlock: 'latest' // Pas besoin valeur par défaut
         })
-        console.log("AddVoterEvents", AddVoterEvents);
 
-        // const WorkflowStatusChangeEvent = await publicClient.getLogs({
-        //     address: contractAddress,
-        //     event: parseAbiItem('event WorkflowStatusChange(WorkflowStatus previousStatus, WorkflowStatus newStatus)'),
-        //     // du premier bloc
-        //     fromBlock: 0n,
-        //     // jusqu'au dernier
-        //     toBlock: 'latest' // Pas besoin valeur par défaut
-        // })
-
+        const WorkflowStatusChangeEvent = await publicClient.getLogs({
+            address: contractAddress,
+            event: parseAbiItem('event WorkflowStatusChange(uint8 previousStatus, uint8 newStatus)'),
+            // du premier bloc
+            fromBlock: 0n,
+            // jusqu'au dernier
+            toBlock: 'latest' 
+        })
+        console.log("WorkflowStatusChangeEvent", WorkflowStatusChangeEvent);
+        
         const ProposalRegisteredEvent = await publicClient.getLogs({
             address: contractAddress,
             event: parseAbiItem('event ProposalRegistered(uint256 proposalId)'),
@@ -101,7 +101,6 @@ const Voting = () => {
             toBlock: 'latest' // Pas besoin valeur par défaut
             
         })
-        console.log("ProposalRegisteredEvent", ProposalRegisteredEvent);
 
         const VotedEvent = await publicClient.getLogs({
             address: contractAddress,
@@ -111,19 +110,17 @@ const Voting = () => {
             // jusqu'au dernier
             toBlock: 'latest' // Pas besoin valeur par défaut
         })
-        console.log("VotedEvent", VotedEvent);
 
-        // ...WorkflowStatusChangeEvent,
-        const combinedEvents = [...AddVoterEvents, ...ProposalRegisteredEvent, ...VotedEvent].map(event => {
+        const combinedEvents = [...AddVoterEvents, ...WorkflowStatusChangeEvent, ...ProposalRegisteredEvent, ...VotedEvent].map(event => {
             let eventData = {
-                type: 'Unknown', // Type par défaut, sera écrasé selon le cas
+                type: 'Unknown', 
                 blockNumber: Number(event.blockNumber),
             };
         
             switch (event.eventName) { 
                 case 'VoterRegistered':
                     eventData.type = 'AddVoter';
-                    // eventData.description = "Voter Registered";
+                    eventData.description = "Voter Registered";
                     if (event.args.voterAddress) {
                         const address = event.args.voterAddress;
                         eventData.address = `${address.substring(0, 4)}...${address.substring(address.length - 4)}`;
@@ -134,17 +131,26 @@ const Voting = () => {
                     eventData.previousStatus = event.args.previousStatus; 
                     eventData.newStatus = event.args.newStatus; 
                     eventData.description = `Status changed from ${eventData.previousStatus} to ${eventData.newStatus}`;
+                    if (event.transactionHash) {
+                        const hash = event.transactionHash;
+                        eventData.hash = `${hash.substring(0, 4)}...${hash.substring(hash.length - 4)}`;
+                    }
+                    
+                    // eventData.transactionHash = event.transactionHash; 
+                    
                     break;
                 case 'ProposalRegistered':
                     eventData.type = 'AddProposal';
                     eventData.proposalId = event.args.proposalId; 
                     eventData.description = `Proposal ID: ${eventData.proposalId} registered`;
+                    eventData.transactionHash = event.transactionHash; 
                     break;
                 case 'Voted':
                     eventData.type = 'Vote';
                     eventData.voter = event.args.voter; 
                     eventData.proposalId = event.args.proposalId; 
                     eventData.description = `Voter ${eventData.voter} voted for proposal ${eventData.proposalId}`;
+                    eventData.transactionHash = event.transactionHash; 
                     break;
                 
             }
