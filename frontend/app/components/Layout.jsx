@@ -4,7 +4,7 @@ import { Flex } from '@chakra-ui/react'
 
 import Header from './Header'
 import Footer from './Footer'
-import AddProposal from '../components/AddProposal';
+
 
 const Layout = ({ children }) => {
   return (

@@ -5,12 +5,13 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 const Header = () => {
   return (
-    <Flex
+    <Flex mt={300}
+
         justifyContent="space-between"
         alignItems="center"
         p="2rem"
     >
-        <Text>My Logo</Text>
+        <Text>MEDXBEN</Text>
         <ConnectButton />
     </Flex>
   )

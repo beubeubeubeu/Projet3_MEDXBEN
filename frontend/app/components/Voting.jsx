@@ -64,6 +64,7 @@ const Voting = () => {
     const { address } = useAccount();
     const toast = useToast();
     const [events, setEvents] = useState([]);
+    const [proposals, setProposals] = useState([]); //////////////////////////////////////////////////////////////
 
     // Récupère le statut actuel du workflow
     const { data: getWorkflowStatus } = useReadContract({
@@ -72,6 +73,7 @@ const Voting = () => {
         functionName: 'workflowStatus',
         watch: true,
     });
+    //Le steppeur qui affiche l'état du WK
     const { activeStep, setActiveStep } = useSteps({
         initialStep: 0,
     });
@@ -80,6 +82,28 @@ const Voting = () => {
             setActiveStep(getWorkflowStatus);
         }
     }, [getWorkflowStatus, setActiveStep]);
+
+    useEffect(() => {
+        const fetchProposals = async () => {
+            const proposalIds = [];
+
+            const proposalDescriptions = await Promise.all(proposalIds.map(async (id) => {
+                const proposal = await useContractRead({
+                    address: contractAddress,
+                    abi: contractAbi,
+                    functionName: 'GetOneProposal',
+                    args: [id],
+                });
+
+                return { id, description: proposal.data.description };
+            }));
+
+            setProposals(proposalDescriptions);
+            console.log("proposalDescriptions", proposalDescriptions)
+        };
+
+        fetchProposals();
+    }, [address]);
     // Get voter data (not implemented yet)
     // const { data: getVoterData, error: getVoterError, isPending: getVoterIsPending, refetch } = useReadContract({
     //     address: contractAddress,
@@ -121,7 +145,6 @@ const Voting = () => {
             // jusqu'au dernier
             toBlock: 'latest'
         })
-        console.log("WorkflowStatusChangeEvent", WorkflowStatusChangeEvent);
 
         const ProposalRegisteredEvent = await publicClient.getLogs({
             address: contractAddress,
@@ -207,6 +230,7 @@ const Voting = () => {
         }
         getAllEvents();
     }, [address])
+
 
     return (
         <Box direction="column" width="100%">
