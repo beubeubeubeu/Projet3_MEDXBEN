@@ -5,7 +5,7 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 const Header = () => {
   return (
-    <Flex mt={300}
+    <Flex
 
         justifyContent="space-between"
         alignItems="center"

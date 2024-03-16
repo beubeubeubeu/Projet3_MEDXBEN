@@ -10,7 +10,7 @@ const Layout = ({ children }) => {
   return (
     <Flex
       direction="column"
-      h="100vh"
+      minH="100vh"
       justifyContent="center"
     >
       <Header />
