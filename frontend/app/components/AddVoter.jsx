@@ -16,7 +16,7 @@ const AddVoter = ({getEvents}) => {
   const toast = useToast();
 
   // Add voter hook
-  const { error: addVotererror, isPending: addVoterIsPending, writeContract: addVoterCall } = useWriteContract({
+  const { isPending: addVoterIsPending, writeContract: addVoterCall } = useWriteContract({
     mutation: {
         onSuccess: () => {
             toast({
@@ -28,7 +28,7 @@ const AddVoter = ({getEvents}) => {
         },
         onError: (error) => {
             toast({
-                title: addVotererror.message,
+                title: error.shortMessage,
                 status: 'error',
                 duration: 3000,
                 isClosable: true,
