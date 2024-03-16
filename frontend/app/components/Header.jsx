@@ -11,7 +11,7 @@ const Header = () => {
         alignItems="center"
         p="2rem"
     >
-        <Text>MEDXBEN</Text>
+        <Text>Voting MEDXBEN</Text>
         <ConnectButton />
     </Flex>
   )
