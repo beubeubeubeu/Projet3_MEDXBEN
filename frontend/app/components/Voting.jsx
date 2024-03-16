@@ -28,10 +28,7 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 
-import {
-    Box,
-    useToast
-} from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 
 import { useReadContract, useAccount } from 'wagmi';
 import { contractAddress, contractAbi } from '@/constants';
