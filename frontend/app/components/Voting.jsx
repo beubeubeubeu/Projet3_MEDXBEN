@@ -1,5 +1,5 @@
 
-//     // Is owner
+//     // TODO Is owner
 //     // function isOwner() {
 //     //     if (!isConnected) {
 //     //         return false
@@ -21,6 +21,9 @@
 //     //     account: address,
 //     //     args: [voterAddress]
 //     // })
+
+
+// TODO Is Voter
 
 'use client'
 import React, { useState, useEffect } from 'react';
@@ -49,6 +52,8 @@ import NextPhaseButton from './NextPhaseButton';
 import AddVoter from './AddVoter';
 import AddProposal from './AddProposal';
 import Events from './Events'
+import VoteSelect from './VoteSelect'
+
 import { parseAbiItem } from 'viem'
 
 const workflowSteps = [
@@ -64,7 +69,6 @@ const Voting = () => {
     const { address } = useAccount();
     const toast = useToast();
     const [events, setEvents] = useState([]);
-    
 
     // Récupère le statut actuel du workflow
     const { data: getWorkflowStatus } = useReadContract({
@@ -111,7 +115,7 @@ const Voting = () => {
             address: contractAddress,
             event: parseAbiItem('event VoterRegistered(address voterAddress)'),
             fromBlock: 0n,
-            toBlock: 'latest' 
+            toBlock: 'latest'
         })
 
         const WorkflowStatusChangeEvent = await publicClient.getLogs({
@@ -202,10 +206,51 @@ const Voting = () => {
         getAllEvents();
     }, [address])
 
+    // Voting
+    const [voteOptions, setVoteOptions] = useState([{}])
+
+    // Wanted to fetch descriptions but dont know how to use
+    // a hook in a loop (seem to be unable to)
+    // Tried web3js but did not manage to call GetOneProposal through current
+    // connected wallet. Will try again.
+    //
+    // Commented for now
+    //
+    // const { data: getOneProposal, refetch: refetchProposal }  = useReadContract({
+    //     address: contractAddress,
+    //     abi: contractAbi,
+    //     functionName: 'GetOneProposal',
+    //     account: address,
+    //     watch: true,
+    //     args: [proposalId]
+    // })
+
+    const getProposals = async () => {
+        const tmpVoteOptions = []
+        const proposalRegisteredEvent = await publicClient.getLogs({
+            address: contractAddress,
+            event: parseAbiItem('event ProposalRegistered(uint256 proposalId)'),
+            fromBlock: 0n,
+            toBlock: 'latest'
+        })
+        proposalRegisteredEvent.map(async event => {
+            tmpVoteOptions.push({id: event.args.proposalId, description: `Proposal ${event.args.proposalId}`})
+        })
+        setVoteOptions(tmpVoteOptions);
+    }
+
+    useEffect(() => {
+        const getAllProposals = async () => {
+            if (address !== 'undefined') {
+                await getProposals();
+            }
+        }
+        getAllProposals();
+    }, [address])
 
     return (
         <Box direction="column" width="100%">
-            <WinningProposal workflowStatus={getWorkflowStatus || 0} winningProposalID={0} />
+            <WinningProposal workflowStatus={getWorkflowStatus || 0} address={address} />
             <br />
             <br />
             <WorkflowStatusComponent workflowStatus={getWorkflowStatus || 0} />
@@ -229,7 +274,7 @@ const Voting = () => {
                         </StepIndicator>
                         <Box flexShrink='2'ml={1} mr={1}>
                             <StepTitle fontSize="xs" >{step.title}</StepTitle>
-                           
+
                         </Box>
                     </Step>
                 ))}
@@ -242,6 +287,11 @@ const Voting = () => {
             <br />
             <br />
             <AddProposal contractAddress={contractAddress} contractAbi={contractAbi} />
+            <br />
+            <hr />
+            <br />
+            <br />
+            <VoteSelect options={voteOptions} address={address}/>
             <br />
             <hr />
             <br />
