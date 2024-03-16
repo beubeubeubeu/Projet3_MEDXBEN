@@ -87,15 +87,6 @@ const Voting = () => {
         }
     }, [getWorkflowStatus, setActiveStep]);
 
-    // Get voter data (not implemented yet)
-    // const { data: getVoterData, error: getVoterError, isPending: getVoterIsPending, refetch } = useReadContract({
-    //     address: contractAddress,
-    //     abi: contractAbi,
-    //     functionName: 'getVoter',
-    //     account: address,
-    //     args: [voterAddress]
-    // })
-
     // Get winning proposal ID
     const { data: getWinningProposalID, isPending: getWinningProposalIsPending, refetch: refetchWinningProposal } = useReadContract({
         address: contractAddress,
@@ -208,22 +199,6 @@ const Voting = () => {
 
     // Voting
     const [voteOptions, setVoteOptions] = useState([{}])
-
-    // Wanted to fetch descriptions but dont know how to use
-    // a hook in a loop (seem to be unable to)
-    // Tried web3js but did not manage to call GetOneProposal through current
-    // connected wallet. Will try again.
-    //
-    // Commented for now
-    //
-    // const { data: getOneProposal, refetch: refetchProposal }  = useReadContract({
-    //     address: contractAddress,
-    //     abi: contractAbi,
-    //     functionName: 'GetOneProposal',
-    //     account: address,
-    //     watch: true,
-    //     args: [proposalId]
-    // })
 
     const getProposals = async () => {
         const tmpVoteOptions = []
