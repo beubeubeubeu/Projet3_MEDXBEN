@@ -10,13 +10,6 @@ function AddProposal() {
   const { address, isConnected } = useAccount();
   const toast = useToast();
 
-  const { data: voterData, isFetching: isVoterFetching, isError: isVoterError } = useReadContract({
-    address: contractAddress,
-    abi: contractAbi,
-    functionName: 'GetVoter',
-    args: [address],
-  });
-
   // Écrire une nouvelle proposition
   const { writeContract: addProposal, isLoading: isProposalAdding, error: proposalAddError } = useWriteContract({
     mutation: {
