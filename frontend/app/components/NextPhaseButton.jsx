@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Button, Spinner } from '@chakra-ui/react'
+import { Button, Spinner, useToast } from '@chakra-ui/react'
 
 import { useWriteContract } from 'wagmi'
 
@@ -8,7 +8,9 @@ import { currentPhaseNextPhase, contractAbi, contractAddress } from '@/constants
 
 const NextPhaseButton = ({workflowStatus, onSuccessfulNextPhase, pending}) => {
 
-  const { error: setNextPhaseError, writeContract: setNextPhase } = useWriteContract({
+  const toast = useToast();
+
+  const { isPending: nextPhaseIsPending, writeContract: setNextPhase } = useWriteContract({
     mutation: {
         onSuccess: () => {
             onSuccessfulNextPhase();
@@ -21,7 +23,7 @@ const NextPhaseButton = ({workflowStatus, onSuccessfulNextPhase, pending}) => {
         },
         onError: (error) => {
             toast({
-                title: setNextPhaseError.message,
+                title: error.shortMessage,
                 status: "error",
                 duration: 3000,
                 isClosable: true,
@@ -45,7 +47,7 @@ const NextPhaseButton = ({workflowStatus, onSuccessfulNextPhase, pending}) => {
       onClick={handleSetNextPhase}
       isDisabled={workflowStatus === 5}
     >
-      { pending ? <Spinner /> : currentPhaseNextPhase[workflowStatus].btnText }
+      { nextPhaseIsPending ? <Spinner /> : currentPhaseNextPhase[workflowStatus].btnText }
     </Button>
   )
 }
