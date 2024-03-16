@@ -30,44 +30,25 @@ import React, { useState, useEffect } from 'react';
 
 import {
     Box,
-    useToast,
-    Step,
-    Stepper,
-    StepIndicator,
-    StepNumber,
-    StepStatus,
-    StepSeparator,
-    StepIcon,
-    StepTitle,
-    StepDescription,
-    useSteps,
+    useToast
 } from '@chakra-ui/react';
 
 import { useReadContract, useAccount } from 'wagmi';
 import { contractAddress, contractAbi } from '@/constants';
 import { publicClient } from '@/network/client'
+
 import WinningProposal from './WinningProposal';
-import WorkflowStatusComponent from './WorkflowStatus';
 import NextPhaseButton from './NextPhaseButton';
 import AddVoter from './AddVoter';
 import AddProposal from './AddProposal';
 import Events from './Events'
 import VoteSelect from './VoteSelect'
+import WorkflowStepper from './WorkflowStepper'
 
 import { parseAbiItem } from 'viem'
 
-const workflowSteps = [
-    { title: 'Registering Voters' },
-    { title: 'Proposals Registration Started'},
-    { title: 'Proposals Registration Ended'},
-    { title: 'Voting Session Started'},
-    { title: 'Voting Session Ended'},
-    { title: 'Votes Tallied'},
-];
-
 const Voting = () => {
     const { address } = useAccount();
-    const toast = useToast();
     const [events, setEvents] = useState([]);
 
     // Récupère le statut actuel du workflow
@@ -77,15 +58,6 @@ const Voting = () => {
         functionName: 'workflowStatus',
         watch: true,
     });
-    //Le steppeur qui affiche l'état du WK
-    const { activeStep, setActiveStep } = useSteps({
-        initialStep: 0,
-    });
-    useEffect(() => {
-        if (typeof getWorkflowStatus !== 'undefined') {
-            setActiveStep(getWorkflowStatus);
-        }
-    }, [getWorkflowStatus, setActiveStep]);
 
     // Get winning proposal ID
     const { data: getWinningProposalID, isPending: getWinningProposalIsPending, refetch: refetchWinningProposal } = useReadContract({
@@ -228,33 +200,12 @@ const Voting = () => {
             <WinningProposal workflowStatus={getWorkflowStatus || 0} address={address} />
             <br />
             <br />
-            <WorkflowStatusComponent workflowStatus={getWorkflowStatus || 0} />
-            <br />
             <NextPhaseButton workflowStatus={getWorkflowStatus || 0} onSuccessfulNextPhase={getEvents} />
             <br />
             <br />
             <br />
             <br />
-            {/* Intégration du Stepper */}
-            <Box width="95%" m="auto" borderWidth='1px' borderRadius='lg' boxShadow='lg' p='6' rounded='md' bg='gray.50'>
-            <Stepper index={activeStep}>
-                {workflowSteps.map((step, index) => (
-                    <Step key={index}>
-                        <StepIndicator>
-                            <StepStatus
-                                complete={<StepIcon />}
-                                incomplete={<StepNumber>{index + 1}</StepNumber>}
-                                active={<StepNumber>{index + 1}</StepNumber>}
-                            />
-                        </StepIndicator>
-                        <Box flexShrink='2'ml={1} mr={1}>
-                            <StepTitle fontSize="xs" >{step.title}</StepTitle>
-
-                        </Box>
-                    </Step>
-                ))}
-            </Stepper>
-            </Box>
+            <WorkflowStepper workflowStatus={getWorkflowStatus || 0} />
             <br />
             <AddVoter />
             <br />
