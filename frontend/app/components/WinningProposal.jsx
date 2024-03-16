@@ -1,35 +1,44 @@
 import React, { useEffect, useState } from 'react'
 
-import { Box, Badge, Text } from '@chakra-ui/react'
+import { Box, Badge, Spinner } from '@chakra-ui/react'
 
-// import { contractAddress, contractAbi } from '@/constants'
+import { useReadContract } from 'wagmi'
 
-// import { useReadContract } from 'wagmi'
+import { contractAddress, contractAbi } from '@/constants';
 
-const WinningProposal = ({workflowStatus, winningProposalID}) => {
-
-  // Get winning proposal
-  // Only works if workflowStatus current user is a voter
-  // TODO
-  // const { data: getWinningProposal, isPending: getWinningProposalIsPending, refetch: refetchWinningProposal } = useReadContract({
-  //     address: contractAddress,
-  //     abi: contractAbi,
-  //     functionName: 'GetOneProposal',
-  //     args: [winningProposalID]
-  // })
+const WinningProposal = ({workflowStatus, address}) => {
 
   const [votesTallied, setvotesTallied] = useState(false);
 
   useEffect(() => {
     setvotesTallied(workflowStatus === 5)
+    refetchProposal()
   }, [workflowStatus])
+
+  const { data: getWinningProposalID, refetch: refetchWinningProposalId }  = useReadContract({
+    address: contractAddress,
+    abi: contractAbi,
+    functionName: 'winningProposalID',
+    account: address,
+    watch: true
+  })
+
+  const { data: winningProposal, refetch: refetchProposal }  = useReadContract({
+    address: contractAddress,
+    abi: contractAbi,
+    functionName: 'GetOneProposal',
+    account: address,
+    watch: true,
+    args: [getWinningProposalID]
+  })
 
   return (
     <Box>
       { !votesTallied ? (
-          <Badge>No winning proposal</Badge>
-        ) : (
-          <Badge colorScheme={'green'}>Winning proposal ID is {winningProposalID}</Badge>
+          <Badge>No winning proposal yet</Badge>
+        ) : winningProposal === undefined ? (<Spinner />) :
+        (
+          <Badge colorScheme={'green'}>Winning proposal ID is {getWinningProposalID.toString()}, winning proposal vote count is {winningProposal.voteCount.toString()}, and its description is: {winningProposal.description}</Badge>
         )
       }
     </Box>
