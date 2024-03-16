@@ -53,6 +53,9 @@ function AddProposal() {
     });
   };
 
+
+
+
   // if (!isConnected) {
   //   return <Text>Please connect your wallet.</Text>;
   // }
@@ -83,7 +86,9 @@ function AddProposal() {
         </Button>
         { proposalAddError && <Text color="red.500">Error: {proposalAddError.message}</Text> }
       </Flex>
+
     </Box>
+
   );
 }
 

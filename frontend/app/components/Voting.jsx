@@ -28,7 +28,7 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 
-import { Box } from '@chakra-ui/react';
+import { Box, Flex, Heading, VStack, Divider, Center } from '@chakra-ui/react';
 
 import { useReadContract, useAccount } from 'wagmi';
 import { contractAddress, contractAbi } from '@/constants';
@@ -47,6 +47,7 @@ import { parseAbiItem } from 'viem'
 const Voting = () => {
     const { address } = useAccount();
     const [events, setEvents] = useState([]);
+    const [refreshEvents, setRefreshEvents] = useState(false);
 
     // Récupère le statut actuel du workflow
     const { data: getWorkflowStatus } = useReadContract({
@@ -178,7 +179,7 @@ const Voting = () => {
             toBlock: 'latest'
         })
         proposalRegisteredEvent.map(async event => {
-            tmpVoteOptions.push({id: event.args.proposalId, description: `Proposal ${event.args.proposalId}`})
+            tmpVoteOptions.push({ id: event.args.proposalId, description: `Proposal ${event.args.proposalId}` })
         })
         setVoteOptions(tmpVoteOptions);
     }
@@ -192,35 +193,48 @@ const Voting = () => {
         getAllProposals();
     }, [address])
 
+    useEffect(() => {
+        if (refreshEvents) {
+          getEvents(); // Fonction pour récupérer les événements
+          setRefreshEvents(false); // Réinitialise l'état pour les futurs rafraîchissements
+        }
+      }, [refreshEvents]);
+
     return (
-        <Box direction="column" width="100%">
-            <WinningProposal workflowStatus={getWorkflowStatus || 0} address={address} />
-            <br />
-            <br />
-            <NextPhaseButton workflowStatus={getWorkflowStatus || 0} onSuccessfulNextPhase={getEvents} />
-            <br />
-            <br />
-            <br />
-            <br />
-            <WorkflowStepper workflowStatus={getWorkflowStatus || 0} />
-            <br />
-            <AddVoter />
-            <br />
-            <hr />
-            <br />
-            <br />
-            <AddProposal contractAddress={contractAddress} contractAbi={contractAbi} />
-            <br />
-            <hr />
-            <br />
-            <br />
-            <VoteSelect options={voteOptions} address={address}/>
-            <br />
-            <hr />
-            <br />
-            <br />
-            <Events events={events} />
-        </Box>
+
+        <Flex direction="column" justifyContent="center" width="100%">
+            <Box
+                p={5}
+                shadow="md"
+                borderWidth="1px"
+                borderColor="gray50"
+                bgColor="gray.50"
+                borderRadius="lg"
+                width="full"
+                maxWidth="full"
+            >
+                <VStack spacing={4} align="stretch">
+                    <Flex justifyContent="space-between" alignItems="center">
+                        <Heading size="lg" color="gray">Voting System</Heading>
+                        <NextPhaseButton workflowStatus={getWorkflowStatus || 0} onSuccessfulNextPhase={getEvents}
+                        />
+                    </Flex>
+
+                    <Divider />
+                    <WinningProposal workflowStatus={getWorkflowStatus || 0} address={address} />
+                    <WorkflowStepper workflowStatus={getWorkflowStatus || 0} />
+
+                    <AddVoter setRefreshEvents={setRefreshEvents}/>
+
+                    <AddProposal contractAddress={contractAddress} contractAbi={contractAbi} />
+
+                    <VoteSelect options={voteOptions} address={address} />
+
+                    <Events events={events} />
+                </VStack>
+            </Box>
+
+        </Flex>
     );
 };
 

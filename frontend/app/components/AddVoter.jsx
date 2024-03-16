@@ -9,10 +9,9 @@ import { useWriteContract } from 'wagmi'
 import { contractAddress, contractAbi } from '@/constants'
 
 
-const AddVoter = ({getEvents}) => {
+const AddVoter = ({getEvents, setRefreshEvents}) => {
 
   const [voterAddress, setVoterAddress] = useState('');
-
   const toast = useToast();
 
   // Add voter hook
@@ -25,6 +24,7 @@ const AddVoter = ({getEvents}) => {
                 duration: 3000,
                 isClosable: true,
             });
+            setRefreshEvents(true); 
         },
         onError: (error) => {
             toast({
