@@ -12,13 +12,14 @@ import { parseAbiItem } from 'viem'
 import VoterAccess from './VoterAccess';
 import RestrictedAccess from './RestrictedAccess';
 import AdminAccess from './AdminAccess';
+import NotConnected from './Notconnected';
 
 const Voting = () => {
     const { address } = useAccount();
     const [events, setEvents] = useState([]);
     const [refreshEvents, setRefreshEvents] = useState(false);
     const [userRights, setUserRights] = useState('loading');
-    const [isVoter, setIsVoter] = useState(false);
+    // const [isVoter, setIsVoter] = useState(false);
     const [registeredVoters, setRegisteredVoters] = useState([]);
 
     // Récupère le statut actuel du workflow
@@ -202,6 +203,8 @@ const Voting = () => {
         },
     });
 
+
+    //////////////////////////////// ACCESS ///////////////////////////////////////////////
         useEffect(() => {
             const addressLower = address?.toLowerCase();
             if (addressLower === isOwnerData?.toLowerCase()) {
@@ -213,22 +216,9 @@ const Voting = () => {
             }
         }, [address, isOwnerData, registeredVoters]);
 
-    // Logique pour déterminer les droits de l'utilisateur
-    useEffect(() => {
-        if (address === isOwnerData) {
-            setUserRights('admin');
-        } else if (isVoter) {
-
-            setUserRights('voter');
-
-        } else {
-            setUserRights(null);
+        if (!address) {
+            return <NotConnected />;
         }
-    }, [address, isOwnerData, isVoter]);
-
-    if (userRights === 'loading') {
-        return <Box>Loading...</Box>;
-    }
 
     if (userRights === 'admin') {
         return <AdminAccess
@@ -240,16 +230,19 @@ const Voting = () => {
             setRefreshEvents={setRefreshEvents}
             events={events}
         />;
+    } else if (userRights === 'loading') {
+        return <Box>Loading...</Box>;
+
     } else if (userRights === 'voter') {
         return <VoterAccess />;
 
     } else if (userRights === null) {
         return <RestrictedAccess />;
     }
-
     return (
-        <Text> RETURN VOTING</Text>
+        <Text> something is wrong </Text>
     );
+
 };
 
 export default Voting;
