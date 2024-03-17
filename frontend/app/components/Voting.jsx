@@ -1,18 +1,18 @@
 'use client'
 import React, { useState, useEffect } from 'react';
-import { Box, Flex, Heading, VStack, Divider, Center } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import { useReadContract, useAccount, useWatchContractEvent } from 'wagmi';
 import { contractAddress, contractAbi } from '@/constants';
 import { publicClient } from '@/network/client'
 
-import WinningProposal from './WinningProposal';
 import NextPhaseButton from './NextPhaseButton';
-import AddVoter from './AddVoter';
-import AddProposal from './AddProposal';
-import Events from './Events'
-import VoteSelect from './VoteSelect'
-import WorkflowStepper from './WorkflowStepper'
 import { parseAbiItem } from 'viem'
+// import WinningProposal from './WinningProposal';
+// import AddVoter from './AddVoter';
+// import AddProposal from './AddProposal';
+// import Events from './Events'
+// import VoteSelect from './VoteSelect'
+// import WorkflowStepper from './WorkflowStepper'
 
 
 // VIEW ACCESS
@@ -27,7 +27,6 @@ const Voting = () => {
     const [userRights, setUserRights] = useState('loading');
     const [isVoter, setIsVoter] = useState(false);
     const [registeredVoters, setRegisteredVoters] = useState([]);
-
 
     // Récupère le statut actuel du workflow
     const { data: getWorkflowStatus } = useReadContract({
@@ -52,7 +51,6 @@ const Voting = () => {
         functionName: 'GetVoter',
         args: [address],
     });
-
 
     // Get winning proposal ID
     const { data: getWinningProposalID, isPending: getWinningProposalIsPending, refetch: refetchWinningProposal } = useReadContract({
@@ -143,9 +141,7 @@ const Voting = () => {
                     eventData.description = `Voter ${eventData.voter} voted for proposal ${eventData.proposalId}`;
                     eventData.hash = shortenHash(event.transactionHash);
                     break;
-
             }
-
             return eventData;
         });
 
@@ -155,40 +151,6 @@ const Voting = () => {
 
         setEvents(combinedEvents)
     }
-
-    // const useVoterStatus = (contract) => {
-    //     const { address } = useAccount();
-    //     const [isVoter, setIsVoter] = useState(false);
-    //     const [isLoading, setIsLoading] = useState(true);
-
-    //     useEffect(() => {
-    //         const fetchVoterStatus = async () => {
-    //             setIsLoading(true);
-    //             try {
-    //                 // Création d'un filtre pour les événements VoterRegistered
-    //                 const filter = contract.filters.VoterRegistered();
-    //                 // Récupération des événements depuis le bloc de déploiement du contrat
-    //                 const events = await contract.queryFilter(filter);
-
-    //                 // Extraction des adresses des électeurs enregistrés
-    //                 const voters = events.map(event => event.args.voterAddress);
-
-    //                 // Vérification si l'utilisateur courant est un électeur enregistré
-    //                 setIsVoter(voters.includes(address));
-    //             } catch (error) {
-
-    //             } finally {
-    //                 setIsLoading(false);
-    //             }
-    //         };
-
-    //         if (address) {
-    //             fetchVoterStatus();
-    //         }
-    //     }, [address, contract]);
-
-    //     return { isVoter, isLoading };
-    //};
 
     useEffect(() => {
         const getAllEvents = async () => {
@@ -216,43 +178,6 @@ const Voting = () => {
         setVoteOptions(tmpVoteOptions);
     }
 
-    // Gestionnaire d'événements pour VoterRegistered
-    const handleVoterRegistered = (event) => {
-
-        const voterAddress = event[0];
-
-        setRegisteredVoters((current) => [...current, voterAddress]);
-    };
-
-    useEffect(() => {
-        const unsubscribe = useWatchContractEvent({
-          address: contractAddress,
-          abi: contractAbi,
-          eventName: 'VoterRegistered',
-          listener: (event) => {
-            console.log('New VoterRegistered event:', event);
-            const newVoterAddress = event[0].toLowerCase();
-            setRegisteredVoters(prevRegisteredVoters => {
-              // Cette vérification évite d'ajouter des doublons
-              if (!prevRegisteredVoters.includes(newVoterAddress)) {
-                return [...prevRegisteredVoters, newVoterAddress];
-              }
-              return prevRegisteredVoters;
-            });
-          },
-        });
-      
-        // Retourne une fonction de nettoyage qui arrête d'écouter les événements à la désinscription du composant
-        return () => unsubscribe();
-      }, [setRegisteredVoters]); 
-      
-    useEffect(() => {
-        // Dépendance sur 'address' pour vérifier si l'utilisateur courant est un votant enregistré
-        if (address) {
-          setIsVoter(registeredVoters.includes(address.toLowerCase()));
-        }
-      }, [address, registeredVoters]); // Ajoutez 'registeredVoters' et 'address' dans la liste des dépendances
-
     useEffect(() => {
         const getAllProposals = async () => {
             if (address !== 'undefined') {
@@ -269,6 +194,31 @@ const Voting = () => {
         }
     }, [refreshEvents]);
 
+    // Écoute de l'événement VoterRegistered et mise à jour de la liste des électeurs enregistrés
+    useWatchContractEvent({
+        address: contractAddress,
+        abi: contractAbi,
+        eventName: 'VoterRegistered',
+        onLogs: (logs) => {
+            logs.forEach((log) => {
+                const voterAddress = log.args.voterAddress.toLowerCase();
+                if (!registeredVoters.includes(voterAddress)) {
+                    setRegisteredVoters(prev => [...prev, voterAddress]);
+                }
+            });
+        },
+    });
+
+        useEffect(() => {
+            const addressLower = address?.toLowerCase();
+            if (addressLower === isOwnerData?.toLowerCase()) {
+                setUserRights('admin');
+            } else if (registeredVoters.includes(addressLower)) {
+                setUserRights('voter');
+            } else {
+                setUserRights(null);
+            }
+        }, [address, isOwnerData, registeredVoters]);
 
     // Logique pour déterminer les droits de l'utilisateur
     useEffect(() => {
@@ -304,44 +254,7 @@ const Voting = () => {
         return <RestrictedAccess />;
     }
 
-
     return (
-
-        // <Flex direction="column" justifyContent="center" width="100%">
-        //     <Box
-        //         p={5}
-        //         shadow="md"
-        //         borderWidth="1px"
-        //         borderColor="gray50"
-        //         bgColor="gray.50"
-        //         borderRadius="lg"
-        //         width="full"
-        //         maxWidth="full"
-        //     >
-        //         <VStack spacing={4} align="stretch">
-        //             <Flex justifyContent="space-between" alignItems="center">
-        //                 <Heading size="lg" color="gray">Voting System</Heading>
-        //                 <NextPhaseButton workflowStatus={getWorkflowStatus || 0} onSuccessfulNextPhase={getEvents}
-        //                 />
-        //             </Flex>
-
-        //             <Divider />
-        //             <WinningProposal workflowStatus={getWorkflowStatus || 0} address={address} />
-        //             <WorkflowStepper workflowStatus={getWorkflowStatus || 0} />
-
-        //             <AddVoter setRefreshEvents={setRefreshEvents} />
-
-        //             <AddProposal contractAddress={contractAddress} contractAbi={contractAbi} />
-
-        //             <VoteSelect options={voteOptions} address={address} />
-
-        //             <Events events={events} />
-        //             <Box p={5} shadow="md" borderWidth="1px" borderColor="gray.50" bgColor="gray.50" borderRadius="lg" width="full" maxWidth="full">
-        //             </Box>
-        //         </VStack>
-        //     </Box>
-
-        // </Flex>
         <Text> RETURN VOTING</Text>
     );
 };
