@@ -7,18 +7,11 @@ import { publicClient } from '@/network/client'
 
 import NextPhaseButton from './NextPhaseButton';
 import { parseAbiItem } from 'viem'
-// import WinningProposal from './WinningProposal';
-// import AddVoter from './AddVoter';
-// import AddProposal from './AddProposal';
-// import Events from './Events'
-// import VoteSelect from './VoteSelect'
-// import WorkflowStepper from './WorkflowStepper'
-
 
 // VIEW ACCESS
 import VoterAccess from './VoterAccess';
 import RestrictedAccess from './RestrictedAccess';
-import AdminView from './AdminView';
+import AdminAccess from './AdminAccess';
 
 const Voting = () => {
     const { address } = useAccount();
@@ -238,7 +231,7 @@ const Voting = () => {
     }
 
     if (userRights === 'admin') {
-        return <AdminView
+        return <AdminAccess
             NextPhaseButton={NextPhaseButton}
             getWorkflowStatus={getWorkflowStatus}
             onSuccessfulNextPhase={getEvents}

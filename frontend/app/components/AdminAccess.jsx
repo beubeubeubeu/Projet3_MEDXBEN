@@ -9,14 +9,14 @@ import WorkflowStepper from './WorkflowStepper';
 import { contractAddress, contractAbi } from '@/constants';
 
 
-const AdminView = ({ getWorkflowStatus, onSuccessfulNextPhase, address, voteOptions, setRefreshEvents, events, NextPhaseButton  }) => {
+const AdminAccess = ({ getWorkflowStatus, onSuccessfulNextPhase, address, voteOptions, setRefreshEvents, events, NextPhaseButton  }) => {
     return (
         <Flex direction="column" justifyContent="center" width="100%">
             <Box p={5} shadow="md" borderWidth="1px" borderColor="gray.50" bgColor="gray.50" borderRadius="lg" width="full" maxWidth="full">
                 <VStack spacing={4} align="stretch">
 
                     <Flex justifyContent="space-between" alignItems="center">
-            <Heading size="lg" color="gray">Admin View - Voting System</Heading>
+            <Heading size="lg" color="gray">Admin Access - Voting System</Heading>
             <NextPhaseButton
                 workflowStatus={getWorkflowStatus || 0}
                 onSuccessfulNextPhase={events}
@@ -35,4 +35,4 @@ const AdminView = ({ getWorkflowStatus, onSuccessfulNextPhase, address, voteOpti
     );
     
 };
-export default AdminView;
+export default AdminAccess;

@@ -12,7 +12,7 @@ const VoterAccess = ({ getWorkflowStatus, address, voteOptions }) => {
             <Box p={5} shadow="md" borderWidth="1px" borderColor="gray.50" bgColor="gray.50" borderRadius="lg" width="full" maxWidth="full">
                 <VStack spacing={4} align="stretch">
                     <Flex justifyContent="space-between" alignItems="center">
-                        <Heading size="lg" color="gray">Voter View - Voting System</Heading>
+                        <Heading size="lg" color="gray">Voter Access - Voting System</Heading>
                     </Flex>
                     <Divider />
                     <WinningProposal workflowStatus={getWorkflowStatus} address={address} />
