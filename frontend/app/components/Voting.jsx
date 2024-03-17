@@ -12,7 +12,7 @@ import { parseAbiItem } from 'viem'
 import VoterAccess from './VoterAccess';
 import RestrictedAccess from './RestrictedAccess';
 import AdminAccess from './AdminAccess';
-import NotConnected from './Notconnected';
+import NotConnected from './NotConnected';
 import UnregisteredUser from './UnregisteredUser'
 
 const Voting = () => {
@@ -20,7 +20,6 @@ const Voting = () => {
     const [events, setEvents] = useState([]);
     const [refreshEvents, setRefreshEvents] = useState(false);
     const [userRights, setUserRights] = useState('loading');
-    const [registeredVoters, setRegisteredVoters] = useState([]);
 
     // Récupère le statut actuel du workflow
     const { data: getWorkflowStatus } = useReadContract({
@@ -125,7 +124,7 @@ const Voting = () => {
 
     useEffect(() => {
         const getAllEvents = async () => {
-            if (address !== 'undefined') {
+            if (address !== undefined) {
                 await getEvents();
             }
         }
@@ -151,7 +150,7 @@ const Voting = () => {
 
     useEffect(() => {
         const getAllProposals = async () => {
-            if (address !== 'undefined') {
+            if (address !== undefined) {
                 await getProposals();
             }
         }
@@ -165,46 +164,37 @@ const Voting = () => {
         }
     }, [refreshEvents]);
 
-    // Écoute de l'événement VoterRegistered et mise à jour de la liste des électeurs enregistrés
-    useWatchContractEvent({
+    //////////////////////////////// ACCESS ///////////////////////////////////////////////
+
+    const { data: getVoter } = useReadContract({
         address: contractAddress,
         abi: contractAbi,
-        eventName: 'VoterRegistered',
-        onLogs: (logs) => {
-            logs.forEach((log) => {
-                const voterAddress = log.args.voterAddress.toLowerCase();
-                if (!registeredVoters.includes(voterAddress)) {
-                    setRegisteredVoters(prev => [...prev, voterAddress]);
-                }
-            });
-        },
+        functionName: 'GetVoter',
+        account: address,
+        args: [address],
     });
 
-    //////////////////////////////// ACCESS ///////////////////////////////////////////////
     useEffect(() => {
         const addressLower = address?.toLowerCase();
         if (addressLower === isOwnerData?.toLowerCase()) {
             setUserRights('admin');
-        } else if (registeredVoters.includes(addressLower)) {
+        } else if (getVoter?.isRegistered) {
             setUserRights('voter');
-        } else if (addressLower && !registeredVoters.includes(addressLower)) {
+        } else if (addressLower) {
             setUserRights('unregistered');
         } else {
             setUserRights(null);
         }
-    }, [address, isOwnerData, registeredVoters]);
+    }, [address, getVoter, isOwnerData]);
 
     if (!address) {
         return <NotConnected />;
-    }
-
-    if (userRights === 'admin') {
+    } else if (userRights === 'admin') {
         return <AdminAccess
             NextPhaseButton={NextPhaseButton}
             getWorkflowStatus={getWorkflowStatus}
             onSuccessfulNextPhase={getEvents}
             address={address}
-            voteOptions={voteOptions}
             setRefreshEvents={setRefreshEvents}
             events={events}
         />;
@@ -212,13 +202,20 @@ const Voting = () => {
         return <Box>Loading...</Box>;
 
     } else if (userRights === 'voter') {
-        return <VoterAccess />;
+        return <VoterAccess
+            workflowStatus={getWorkflowStatus}
+            address={address}
+            options={voteOptions}
+            events={events}
+        />;
 
     } else if (userRights === 'unregistered') {
         return <UnregisteredUser />;
 
     } else if (userRights === null) {
-        return <RestrictedAccess />;
+        return <RestrictedAccess
+            workflowStatus={getWorkflowStatus}
+        />;
     }
 
     return (

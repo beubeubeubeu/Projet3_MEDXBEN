@@ -60,7 +60,8 @@ function VoteSelect({ options = [], address }) {
           textAlign="left"
           py={2}
           px={4}
-          m={1}
+          mb={1}
+          mt={1}
           borderRadius="5px"
           borderWidth="1px"
           borderColor="gray.200"
@@ -75,8 +76,8 @@ function VoteSelect({ options = [], address }) {
           <input type="hidden" />
         </Box>
       ))}
-      <Button {...selectedOption === null ? 'disabled' : ''} textAlign="left" mt={4} colorScheme="blue" onClick={setVote}>
-        {setVoteIsPending ? <Spinner /> : 'Vote'}
+      <Button mb={5} {...selectedOption === null ? 'disabled' : ''} textAlign="left" mt={4} colorScheme="blue" onClick={setVote}>
+        {setVoteIsPending ? <Spinner/> : 'Vote'}
       </Button>
     </Box>
   )

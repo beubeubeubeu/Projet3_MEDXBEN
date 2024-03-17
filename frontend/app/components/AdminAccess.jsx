@@ -5,8 +5,7 @@ import AddVoter from './AddVoter';
 import Events from './Events';
 import WorkflowStepper from './WorkflowStepper';
 
-
-const AdminAccess = ({ getWorkflowStatus, address, setRefreshEvents, events, NextPhaseButton  }) => {
+const AdminAccess = ({ getWorkflowStatus, onSuccessfulNextPhase, address, setRefreshEvents, events, NextPhaseButton  }) => {
     return (
         <Flex direction="column" justifyContent="center" width="100%">
             <Box p={5} shadow="md" borderWidth="1px" borderColor="gray.50" bgColor="gray.50" borderRadius="lg" width="full" maxWidth="full">
@@ -19,8 +18,8 @@ const AdminAccess = ({ getWorkflowStatus, address, setRefreshEvents, events, Nex
                 onSuccessfulNextPhase={events}
             />
             </Flex>
+                    <WinningProposal isVoter={false} workflowStatus={getWorkflowStatus} address={address} />
                     <Divider />
-                    <WinningProposal workflowStatus={getWorkflowStatus} address={address} />
                     <WorkflowStepper workflowStatus={getWorkflowStatus} />
                     { getWorkflowStatus === 0 ? (
                             <AddVoter setRefreshEvents={setRefreshEvents} />

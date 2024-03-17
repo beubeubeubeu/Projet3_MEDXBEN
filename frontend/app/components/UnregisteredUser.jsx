@@ -3,7 +3,7 @@ import { Alert, AlertIcon, AlertTitle, AlertDescription } from '@chakra-ui/react
 import WinningProposal from './WinningProposal';
 
 
-const UnregisteredUser = (getWorkflowStatus, address) => {
+const UnregisteredUser = ({workflowStatus, address}) => {
   return (
     <Alert
       status='info'
@@ -22,7 +22,7 @@ const UnregisteredUser = (getWorkflowStatus, address) => {
       <AlertDescription maxWidth='sm'>
         Votre compte est connecté mais n'est pas enregistré comme électeur. Veuillez contacter l'administrateur à l'adresse suivante 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 pour plus d'informations.
       </AlertDescription>
-      <WinningProposal workflowStatus={getWorkflowStatus} address={address} />
+      <WinningProposal isVoter={false} workflowStatus={workflowStatus} address={address} />
     </Alert>
   );
 }

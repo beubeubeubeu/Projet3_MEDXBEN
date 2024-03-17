@@ -15,7 +15,6 @@ function AddProposal() {
       onSuccess(data) {
         toast({
           title: "Proposal added successfully.",
-          description: `Transaction hash: ${data.hash}`,
           status: "success",
           duration: 9000,
           isClosable: true,
