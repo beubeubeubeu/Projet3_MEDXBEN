@@ -25,14 +25,17 @@ const AdminAccess = ({ getWorkflowStatus, onSuccessfulNextPhase, address, voteOp
                     <Divider />
                     <WinningProposal workflowStatus={getWorkflowStatus} address={address} />
                     <WorkflowStepper workflowStatus={getWorkflowStatus} />
-                    <AddVoter setRefreshEvents={setRefreshEvents} />
-                    <AddProposal contractAddress={contractAddress} contractAbi={contractAbi} />
-                    <VoteSelect options={voteOptions} address={address} />
+                    { getWorkflowStatus === 0 ? (
+                            <AddVoter setRefreshEvents={setRefreshEvents} />
+                        ) : (
+                            null
+                        )
+                    }
                     <Events events={events} />
                 </VStack>
             </Box>
         </Flex>
     );
-    
+
 };
 export default AdminAccess;
