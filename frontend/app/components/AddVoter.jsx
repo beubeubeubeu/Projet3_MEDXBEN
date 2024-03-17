@@ -2,7 +2,7 @@ import React from 'react'
 
 import { useState } from 'react'
 
-import { Box, Button, Flex, Input, Text, useToast } from '@chakra-ui/react'
+import { Box, Button, Flex, Input, Text, useToast, Tag } from '@chakra-ui/react'
 
 import { useWriteContract } from 'wagmi'
 
@@ -49,7 +49,7 @@ const AddVoter = ({getEvents, setRefreshEvents}) => {
 
   return (
     <Box>
-      <Text fontSize="xl" mb="4">Add a new voter</Text>
+      <Tag>Add a new voter</Tag>
       <Flex>
         <Input placeholder='New voter address' onChange={(e) => setVoterAddress(e.target.value)} />
         <Button disabled={addVoterIsPending} onClick={addVoter}>{addVoterIsPending ? 'Confirming...' : 'Add voter'} </Button>

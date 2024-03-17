@@ -311,13 +311,14 @@ export const contractAbi=[
     "type": "function"
   }
 ];
+
 export const workflowStatuses = {
-        0 : "Registering voters",
-        1 : "Proposals registration started",
-        2 : "Proposals registration ended",
-        3 : "Voting session started",
-        4 : "Voting session ended",
-        5 : "Votes tallied"
+  0 : "Registering voters",
+  1 : "Proposals registration started",
+  2 : "Proposals registration ended",
+  3 : "Voting session started",
+  4 : "Voting session ended",
+  5 : "Votes tallied"
 };
 export const currentPhaseNextPhase = {
     0 : { btnText: "Start proposal registration", message: "Proposal registration started", function: "StartProposalsRegistering" },

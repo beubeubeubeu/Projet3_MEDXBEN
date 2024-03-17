@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Box, Button, Input, Text, useToast, Flex } from '@chakra-ui/react';
+import { Box, Button, Input, Text, useToast, Flex, Tag, Divider, AbsoluteCenter  } from '@chakra-ui/react';
 import { useAccount, useReadContract, useWriteContract } from 'wagmi';
 import { contractAddress, contractAbi } from '@/constants';
 
@@ -53,24 +53,10 @@ function AddProposal() {
     });
   };
 
-
-
-
-  // if (!isConnected) {
-  //   return <Text>Please connect your wallet.</Text>;
-  // }
-
-  // if (isVoterFetching) {
-  //   return <Text>Loading voter data...</Text>;
-  // }
-
-  // if (isVoterError || !voterData?.isRegistered) {
-  //   return <Text>You're not a registered voter.</Text>;
-  // }
-
   return (
     <Box>
-      <Text fontSize="xl" mb="4">Add a new proposal</Text>
+
+      <Tag>Add a new proposal</Tag>
       <Flex>
         <Input
           placeholder="Describe your proposal"

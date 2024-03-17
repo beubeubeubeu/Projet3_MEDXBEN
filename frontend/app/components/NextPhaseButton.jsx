@@ -12,32 +12,33 @@ const NextPhaseButton = ({workflowStatus, onSuccessfulNextPhase, pending}) => {
 
   const { isPending: nextPhaseIsPending, writeContract: setNextPhase } = useWriteContract({
     mutation: {
-        onSuccess: () => {
-            onSuccessfulNextPhase();
-            toast({
-                title: currentPhaseNextPhase[workflowStatus].message,
-                status: "success",
-                duration: 3000,
-                isClosable: true,
-            });
-        },
-        onError: (error) => {
-            toast({
-                title: error.shortMessage,
-                status: "error",
-                duration: 3000,
-                isClosable: true,
-            });
-        },
+      onSuccess: () => {
+        onSuccessfulNextPhase();
+        toast({
+          title: currentPhaseNextPhase[workflowStatus].message,
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+        // setRefreshEvents(true);
+      },
+      onError: (error) => {
+        toast({
+          title: error.shortMessage,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      },
     },
   })
 
   const handleSetNextPhase = async() => {
     setNextPhase({
-          address: contractAddress,
-          abi: contractAbi,
-          functionName: currentPhaseNextPhase[workflowStatus].function,
-      })
+      address: contractAddress,
+      abi: contractAbi,
+      functionName: currentPhaseNextPhase[workflowStatus].function,
+    })
   }
 
   return (
