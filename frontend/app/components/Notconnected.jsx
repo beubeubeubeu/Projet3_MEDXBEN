@@ -12,7 +12,7 @@ const NotConnected = () => {
     return (
         <>
         <Flex direction="column" justifyContent="center" width="100%">
-            <Card align='center'>
+            <Card bg="orange.100" align='center'>
                 <CardHeader>
                     <Heading size='md'>
                         <Alert status='warning'>

@@ -29,7 +29,7 @@ const Providers = ({ children }) => {
   return (
     <WagmiProvider config={config}>
         <QueryClientProvider client={queryClient}>
-            <RainbowKitProvider>
+            <RainbowKitProvider coolMode>
                 <ChakraProvider>
                   {children}
                 </ChakraProvider>
