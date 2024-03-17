@@ -1,14 +1,12 @@
 import React from 'react';
 import { Box, Flex, Heading, VStack, Divider } from '@chakra-ui/react';
 import WinningProposal from './WinningProposal';
-import NextPhaseButton from './NextPhaseButton';
 import AddVoter from './AddVoter';
 import AddProposal from './AddProposal';
 import Events from './Events';
 import VoteSelect from './VoteSelect';
 import WorkflowStepper from './WorkflowStepper';
 import { contractAddress, contractAbi } from '@/constants';
-
 
 
 const AdminView = ({ getWorkflowStatus, onSuccessfulNextPhase, address, voteOptions, setRefreshEvents, events, NextPhaseButton  }) => {

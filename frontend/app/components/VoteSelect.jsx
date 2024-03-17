@@ -6,7 +6,7 @@ import { useWriteContract } from 'wagmi'
 
 import { contractAddress, contractAbi } from '@/constants'
 
-function VoteSelect({ options, address }) {
+function VoteSelect({  options = [], address }) {
 
   const [selectedOption, setSelectedOption] = useState(null);
 
@@ -53,7 +53,7 @@ function VoteSelect({ options, address }) {
       {options.map(option => (
         <Box
           as="button"
-          key={option.id}
+          key={option.id} // génere 9 erreurs, j'ai essayer avec {index} et {crypto.randomUUID()} mais ca change rien
           type="button"
           display="block"
           w="full"
