@@ -13,6 +13,7 @@ import VoterAccess from './VoterAccess';
 import RestrictedAccess from './RestrictedAccess';
 import AdminAccess from './AdminAccess';
 import NotConnected from './Notconnected';
+import UnregisteredUser from './UnregisteredUser'
 
 const Voting = () => {
     const { address } = useAccount();
@@ -211,6 +212,8 @@ const Voting = () => {
                 setUserRights('admin');
             } else if (registeredVoters.includes(addressLower)) {
                 setUserRights('voter');
+            } else if (addressLower && !registeredVoters.includes(addressLower)) {
+                setUserRights('unregistered');
             } else {
                 setUserRights(null);
             }
@@ -236,9 +239,13 @@ const Voting = () => {
     } else if (userRights === 'voter') {
         return <VoterAccess />;
 
+    } else if (userRights === 'unregistered') {
+        return <UnregisteredUser />;
+
     } else if (userRights === null) {
         return <RestrictedAccess />;
     }
+    
     return (
         <Text> something is wrong </Text>
     );
