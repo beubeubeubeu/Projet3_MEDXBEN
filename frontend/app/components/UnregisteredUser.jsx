@@ -20,7 +20,7 @@ const UnregisteredUser = (getWorkflowStatus, address) => {
         Compte Non Enregistré
       </AlertTitle>
       <AlertDescription maxWidth='sm'>
-        Votre compte est connecté mais n'est pas encore enregistré comme électeur ou administrateur. Veuillez contacter l'administrateur à l'adresse suivante 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 pour plus d'informations.
+        Votre compte est connecté mais n'est pas enregistré comme électeur. Veuillez contacter l'administrateur à l'adresse suivante 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 pour plus d'informations.
       </AlertDescription>
       <WinningProposal workflowStatus={getWorkflowStatus} address={address} />
     </Alert>
