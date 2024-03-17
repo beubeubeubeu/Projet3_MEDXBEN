@@ -1,4 +1,4 @@
-'use client';
+
 import {
     Alert,
     AlertIcon,
@@ -7,8 +7,9 @@ import {
     Flex,
     Heading,
 } from '@chakra-ui/react'
+import WinningProposal from './WinningProposal';
 
-const NotConnected = () => {
+const NotConnected = (getWorkflowStatus, address) => {
     return (
         <>
         <Flex direction="column" justifyContent="center" width="100%">
@@ -20,6 +21,7 @@ const NotConnected = () => {
                             Please connect your Wallet.
                         </Alert>
                     </Heading>
+                    <WinningProposal workflowStatus={getWorkflowStatus} address={address} />
                 </CardHeader>
             </Card>
             </Flex>
