@@ -9,7 +9,7 @@ import { useWriteContract } from 'wagmi'
 import { contractAddress, contractAbi } from '@/constants'
 
 
-const AddVoter = ({getEvents, setRefreshEvents}) => {
+const AddVoter = ({ setRefreshEvents }) => {
 
   const [voterAddress, setVoterAddress] = useState('');
   const toast = useToast();
@@ -17,34 +17,34 @@ const AddVoter = ({getEvents, setRefreshEvents}) => {
   // Add voter hook
   const { isPending: addVoterIsPending, writeContract: addVoterCall } = useWriteContract({
     mutation: {
-        onSuccess: () => {
-            toast({
-                title: 'Voter has been added',
-                status: 'success',
-                duration: 3000,
-                isClosable: true,
-            });
-            setRefreshEvents(true); 
-        },
-        onError: (error) => {
-            toast({
-                title: error.shortMessage,
-                status: 'error',
-                duration: 3000,
-                isClosable: true,
-            });
-        },
+      onSuccess: () => {
+        toast({
+          title: 'Voter has been added',
+          status: 'success',
+          duration: 3000,
+          isClosable: true,
+        });
+        setRefreshEvents(true);
+      },
+      onError: (error) => {
+        toast({
+          title: error.shortMessage,
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        });
+      },
     },
   });
 
   // Add voter call
-  const addVoter = async() => {
-      addVoterCall({
-          address: contractAddress,
-          abi: contractAbi,
-          functionName: 'AddVoter',
-          args: [voterAddress],
-      })
+  const addVoter = async () => {
+    addVoterCall({
+      address: contractAddress,
+      abi: contractAbi,
+      functionName: 'AddVoter',
+      args: [voterAddress],
+    })
   }
 
   return (

@@ -14,7 +14,7 @@ const UnregisteredUser = (getWorkflowStatus, address) => {
       textAlign='center'
       height='400px'
     >
-             
+
       <AlertIcon boxSize='40px' mr={0} />
       <AlertTitle mt={4} mb={4} fontSize='lg'>
         Compte Non Enregistré

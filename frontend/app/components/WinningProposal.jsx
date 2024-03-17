@@ -6,7 +6,7 @@ import { useReadContract } from 'wagmi'
 
 import { contractAddress, contractAbi } from '@/constants';
 
-const WinningProposal = ({workflowStatus, address}) => {
+const WinningProposal = ({ workflowStatus, address }) => {
 
   const [votesTallied, setvotesTallied] = useState(false);
 
@@ -15,7 +15,7 @@ const WinningProposal = ({workflowStatus, address}) => {
     refetchProposal()
   }, [workflowStatus])
 
-  const { data: getWinningProposalID, refetch: refetchWinningProposalId }  = useReadContract({
+  const { data: getWinningProposalID } = useReadContract({
     address: contractAddress,
     abi: contractAbi,
     functionName: 'winningProposalID',
@@ -23,7 +23,7 @@ const WinningProposal = ({workflowStatus, address}) => {
     watch: true
   })
 
-  const { data: winningProposal, refetch: refetchProposal }  = useReadContract({
+  const { data: winningProposal, refetch: refetchProposal } = useReadContract({
     address: contractAddress,
     abi: contractAbi,
     functionName: 'GetOneProposal',
@@ -34,9 +34,9 @@ const WinningProposal = ({workflowStatus, address}) => {
 
   return (
     <Box>
-      { !votesTallied ? (
-          <Badge>No winning proposal yet</Badge>
-        ) : winningProposal === undefined ? (<Spinner />) :
+      {!votesTallied ? (
+        <Badge>No winning proposal yet</Badge>
+      ) : winningProposal === undefined ? (<Spinner />) :
         (
           <Badge colorScheme={'green'}>Winning proposal ID is {getWinningProposalID.toString()}, winning proposal vote count is {winningProposal.voteCount.toString()}, and its description is: {winningProposal.description}</Badge>
         )

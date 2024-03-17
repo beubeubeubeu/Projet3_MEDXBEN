@@ -6,7 +6,7 @@ import { useWriteContract } from 'wagmi'
 
 import { contractAddress, contractAbi } from '@/constants'
 
-function VoteSelect({  options = [], address }) {
+function VoteSelect({ options = [], address }) {
 
   const [selectedOption, setSelectedOption] = useState(null);
 
@@ -18,34 +18,34 @@ function VoteSelect({  options = [], address }) {
 
   const { isPending: setVoteIsPending, writeContract: setVoteCall } = useWriteContract({
     mutation: {
-        onSuccess: () => {
-            toast({
-                title: 'Vote recorded 🗳️',
-                status: 'success',
-                duration: 3000,
-                isClosable: true,
-            });
-        },
-        onError: (error) => {
-            toast({
-                title: error.shortMessage,
-                status: 'error',
-                duration: 3000,
-                isClosable: true,
-            });
-        },
+      onSuccess: () => {
+        toast({
+          title: 'Vote recorded 🗳️',
+          status: 'success',
+          duration: 3000,
+          isClosable: true,
+        });
+      },
+      onError: (error) => {
+        toast({
+          title: error.shortMessage,
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        });
+      },
     },
   });
 
   // Set vote call
-  const setVote = async() => {
-      setVoteCall({
-          address: contractAddress,
-          abi: contractAbi,
-          functionName: 'SetVote',
-          account: address,
-          args: [selectedOption],
-      })
+  const setVote = async () => {
+    setVoteCall({
+      address: contractAddress,
+      abi: contractAbi,
+      functionName: 'SetVote',
+      account: address,
+      args: [selectedOption],
+    })
   }
 
   return (
@@ -76,7 +76,7 @@ function VoteSelect({  options = [], address }) {
         </Box>
       ))}
       <Button {...selectedOption === null ? 'disabled' : ''} textAlign="left" mt={4} colorScheme="blue" onClick={setVote}>
-        {setVoteIsPending ? <Spinner/> : 'Vote'}
+        {setVoteIsPending ? <Spinner /> : 'Vote'}
       </Button>
     </Box>
   )

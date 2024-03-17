@@ -1,13 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Box, Button, Input, Text, useToast, Flex, Tag, Divider, AbsoluteCenter  } from '@chakra-ui/react';
-import { useAccount, useReadContract, useWriteContract } from 'wagmi';
+import { useState } from 'react';
+import { Box, Button, Input, Text, useToast, Flex, Tag, Divider, AbsoluteCenter } from '@chakra-ui/react';
+import { useAccount, useWriteContract } from 'wagmi';
 import { contractAddress, contractAbi } from '@/constants';
 
 function AddProposal() {
   const [proposalDescription, setProposalDescription] = useState('');
-  const { address, isConnected } = useAccount();
   const toast = useToast();
 
   // Écrire une nouvelle proposition
@@ -70,7 +69,7 @@ function AddProposal() {
         >
           Add Proposal
         </Button>
-        { proposalAddError && <Text color="red.500">Error: {proposalAddError.message}</Text> }
+        {proposalAddError && <Text color="red.500">Error: {proposalAddError.message}</Text>}
       </Flex>
 
     </Box>

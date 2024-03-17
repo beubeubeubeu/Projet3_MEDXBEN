@@ -2,14 +2,11 @@ import React from 'react';
 import { Box, Flex, Heading, VStack, Divider } from '@chakra-ui/react';
 import WinningProposal from './WinningProposal';
 import AddVoter from './AddVoter';
-import AddProposal from './AddProposal';
 import Events from './Events';
-import VoteSelect from './VoteSelect';
 import WorkflowStepper from './WorkflowStepper';
-import { contractAddress, contractAbi } from '@/constants';
 
 
-const AdminAccess = ({ getWorkflowStatus, onSuccessfulNextPhase, address, voteOptions, setRefreshEvents, events, NextPhaseButton  }) => {
+const AdminAccess = ({ getWorkflowStatus, address, setRefreshEvents, events, NextPhaseButton  }) => {
     return (
         <Flex direction="column" justifyContent="center" width="100%">
             <Box p={5} shadow="md" borderWidth="1px" borderColor="gray.50" bgColor="gray.50" borderRadius="lg" width="full" maxWidth="full">
@@ -36,6 +33,5 @@ const AdminAccess = ({ getWorkflowStatus, onSuccessfulNextPhase, address, voteOp
             </Box>
         </Flex>
     );
-
 };
 export default AdminAccess;

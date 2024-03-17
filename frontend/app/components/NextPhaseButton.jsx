@@ -6,7 +6,7 @@ import { useWriteContract } from 'wagmi'
 
 import { currentPhaseNextPhase, contractAbi, contractAddress } from '@/constants'
 
-const NextPhaseButton = ({workflowStatus, onSuccessfulNextPhase, pending}) => {
+const NextPhaseButton = ({workflowStatus, onSuccessfulNextPhase}) => {
 
   const toast = useToast();
 

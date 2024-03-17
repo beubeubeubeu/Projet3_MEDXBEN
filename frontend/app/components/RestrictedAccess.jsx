@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Flex, Heading, VStack, Divider, Center, Text } from '@chakra-ui/react';
+import { Box, Heading, Text } from '@chakra-ui/react';
 
 const RestrictedAccess = () => {
     return (
