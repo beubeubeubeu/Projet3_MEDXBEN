@@ -20,7 +20,6 @@ const Voting = () => {
     const [events, setEvents] = useState([]);
     const [refreshEvents, setRefreshEvents] = useState(false);
     const [userRights, setUserRights] = useState('loading');
-    // const [isVoter, setIsVoter] = useState(false);
     const [registeredVoters, setRegisteredVoters] = useState([]);
 
     // Récupère le statut actuel du workflow
@@ -32,35 +31,12 @@ const Voting = () => {
     });
 
     // Utilisation de useReadContract pour vérifier si l'utilisateur courant est l'owner du contrat
-    const { data: isOwnerData, isLoading: isOwnerLoading } = useReadContract({
+    const { data: isOwnerData } = useReadContract({
         address: contractAddress,
         abi: contractAbi,
         functionName: 'owner',
 
     });
-
-    // Utilisation de useReadContract pour vérifier si l'utilisateur courant est un électeur enregistré
-    const { data: isVoterData, isLoading: isVoterLoading } = useReadContract({
-        address: contractAddress,
-        abi: contractAbi,
-        functionName: 'GetVoter',
-        args: [address],
-    });
-
-    // Get winning proposal ID
-    const { data: getWinningProposalID, isPending: getWinningProposalIsPending, refetch: refetchWinningProposal } = useReadContract({
-        address: contractAddress,
-        abi: contractAbi,
-        functionName: 'winningProposalID',
-        account: address
-    })
-    // Get addvoter
-    const { refetch: refetchAddVoter } = useReadContract({
-        address: contractAddress,
-        abi: contractAbi,
-        functionName: 'AddVoter',
-        account: address
-    })
 
     const getEvents = async () => {
         const AddVoterEvents = await publicClient.getLogs({
@@ -204,24 +180,23 @@ const Voting = () => {
         },
     });
 
-
     //////////////////////////////// ACCESS ///////////////////////////////////////////////
-        useEffect(() => {
-            const addressLower = address?.toLowerCase();
-            if (addressLower === isOwnerData?.toLowerCase()) {
-                setUserRights('admin');
-            } else if (registeredVoters.includes(addressLower)) {
-                setUserRights('voter');
-            } else if (addressLower && !registeredVoters.includes(addressLower)) {
-                setUserRights('unregistered');
-            } else {
-                setUserRights(null);
-            }
-        }, [address, isOwnerData, registeredVoters]);
-
-        if (!address) {
-            return <NotConnected />;
+    useEffect(() => {
+        const addressLower = address?.toLowerCase();
+        if (addressLower === isOwnerData?.toLowerCase()) {
+            setUserRights('admin');
+        } else if (registeredVoters.includes(addressLower)) {
+            setUserRights('voter');
+        } else if (addressLower && !registeredVoters.includes(addressLower)) {
+            setUserRights('unregistered');
+        } else {
+            setUserRights(null);
         }
+    }, [address, isOwnerData, registeredVoters]);
+
+    if (!address) {
+        return <NotConnected />;
+    }
 
     if (userRights === 'admin') {
         return <AdminAccess
@@ -245,7 +220,7 @@ const Voting = () => {
     } else if (userRights === null) {
         return <RestrictedAccess />;
     }
-    
+
     return (
         <Text> something is wrong </Text>
     );
