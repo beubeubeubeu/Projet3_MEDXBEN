@@ -210,7 +210,10 @@ const Voting = () => {
         />;
 
     } else if (userRights === 'unregistered') {
-        return <UnregisteredUser />;
+        return <UnregisteredUser
+            workflowStatus={getWorkflowStatus}
+            address={address}
+        />;
 
     } else if (userRights === null) {
         return <RestrictedAccess
