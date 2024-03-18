@@ -1,9 +1,11 @@
 # Dapp Voting
 Pour correction :
 
-Lien vidéo: LINK
-Lien Déploiement: LINK
-Déployé sur sépolia
+Lien vidéo: 
+
+Lien de la Dapp : https://projet3-medxben.vercel.app/
+
+Déployé sur sépolia et Vercel
 
 Groupe constitué de :
 Benoit Nguyen et
@@ -65,11 +67,12 @@ Voici la liste de la stack utilisée pour la réalisation du projet
     Wagmi
     Chakra UI
     Solidity
-    Netspec
+    Natspec
     Github
+
     Excalidraw
 
-
+# Mémo des commandes à lancer
 
 ### Run front
 
@@ -122,3 +125,19 @@ in client.js import { sepolia } from './sepolia'
 ----- PACKAGE SUPP ------
 npm install pino-pretty
 npm install encoding
+
+### Deploy checklist
+
+Liste de BenBk
+
+- [ ] déployer le contrat sur sepolia
+- [ ] mettre le bon numéro de bloc dans les events
+- [ ] changer aussi l'adresse du contrat dans constants
+- [ ] mettre la chain sepolia custom avec votre rpc url
+- [ ] mettre le repo sur github
+- [ ] avec vercel, déployer en mettant les variables dans le .env.local
+- [ ] mettre l'adresse du site sur cloud.walletconnect pr la verif
+- [ ] mettre le code donné dans /public/.well-known/walletconnect.txt
+- [ ] repusher sur github
+- [ ] attendre le redéploiement automatique
+- [ ] valider la vérification sur walletconnect
