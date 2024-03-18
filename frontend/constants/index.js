@@ -1,4 +1,4 @@
-export const contractAddress="0x5FbDB2315678afecb367f032d93F642f64180aa3"
+export const contractAddress=process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
 export const contractAbi=[
   {
     "inputs": [],
