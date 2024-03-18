@@ -11,7 +11,7 @@ import { parseAbiItem } from 'viem'
 import VoterAccess from './VoterAccess';
 import RestrictedAccess from './RestrictedAccess';
 import AdminAccess from './AdminAccess';
-
+import NotConnected from './NotConnected';
 import UnregisteredUser from './UnregisteredUser'
 
 const Voting = () => {
@@ -216,6 +216,8 @@ const Voting = () => {
             if (!isConnecting) {
                 return <RestrictedAccess />;
             }
+        default:
+            return <NotConnected />;
     }
 };
 
