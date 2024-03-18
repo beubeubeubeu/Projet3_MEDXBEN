@@ -14,6 +14,7 @@ import AdminAccess from './AdminAccess';
 import NotConnected from './NotConnected';
 import UnregisteredUser from './UnregisteredUser'
 
+
 const Voting = () => {
     const { address, isConnecting } = useAccount();
     const [events, setEvents] = useState([]);
