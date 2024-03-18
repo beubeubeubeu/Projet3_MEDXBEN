@@ -1,6 +1,6 @@
 'use client'
 import React, { useState, useEffect } from 'react';
-import { Box, Spinner, Text } from '@chakra-ui/react';
+import { Box, Spinner } from '@chakra-ui/react';
 import { useReadContract, useAccount } from 'wagmi';
 import { contractAddress, contractAbi } from '@/constants';
 import { publicClient } from '@/network/client'
@@ -39,21 +39,21 @@ const Voting = () => {
         const AddVoterEvents = await publicClient.getLogs({
             address: contractAddress,
             event: parseAbiItem('event VoterRegistered(address voterAddress)'),
-            fromBlock: 0n,
+            fromBlock: BigInt(process.env.NEXT_PUBLIC_EVENT_BLOCK_NUMBER),
             toBlock: 'latest'
         })
 
         const WorkflowStatusChangeEvent = await publicClient.getLogs({
             address: contractAddress,
             event: parseAbiItem('event WorkflowStatusChange(uint8 previousStatus, uint8 newStatus)'),
-            fromBlock: 0n,
+            fromBlock: BigInt(process.env.NEXT_PUBLIC_EVENT_BLOCK_NUMBER),
             toBlock: 'latest'
         })
 
         const ProposalRegisteredEvent = await publicClient.getLogs({
             address: contractAddress,
             event: parseAbiItem('event ProposalRegistered(uint256 proposalId)'),
-            fromBlock: 0n,
+            fromBlock: BigInt(process.env.NEXT_PUBLIC_EVENT_BLOCK_NUMBER),
             toBlock: 'latest'
 
         })
@@ -61,7 +61,7 @@ const Voting = () => {
         const VotedEvent = await publicClient.getLogs({
             address: contractAddress,
             event: parseAbiItem('event Voted(address voter, uint256 proposalId)'),
-            fromBlock: 0n,
+            fromBlock: BigInt(process.env.NEXT_PUBLIC_EVENT_BLOCK_NUMBER),
             toBlock: 'latest'
         })
 
@@ -137,7 +137,7 @@ const Voting = () => {
         const proposalRegisteredEvent = await publicClient.getLogs({
             address: contractAddress,
             event: parseAbiItem('event ProposalRegistered(uint256 proposalId)'),
-            fromBlock: 0n,
+            fromBlock: BigInt(process.env.NEXT_PUBLIC_EVENT_BLOCK_NUMBER),
             toBlock: 'latest'
         })
         proposalRegisteredEvent.map(async event => {
