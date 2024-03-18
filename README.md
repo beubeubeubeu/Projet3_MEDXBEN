@@ -15,12 +15,12 @@ Lien Etherscan du contract : https://sepolia.etherscan.io/address/0xCd8CA7D3D6Ae
 
 Déployé sur Sepolia et Vercel
 
-Screen interface admin Vercel
+Screen interface admin Vercel chez Médhi:
 
 ![AdminAccess](https://github.com/beubeubeubeu/Projet3_MEDXBEN/assets/4832337/0de518ca-226f-4c15-a818-13705d2b92da)
 
 
-Screen interface voter Vercel
+Screen interface voter Vercel chez Benoît:
 
 <img width="1429" alt="Screenshot 2024-03-18 at 14 52 31" src="https://github.com/beubeubeubeu/Projet3_MEDXBEN/assets/4832337/a2e06b60-974b-4c0a-8880-f145af833795">
 
