@@ -1,15 +1,14 @@
 import React from 'react';
-import { Box, Heading, Text } from '@chakra-ui/react';
+import { Box, Flex, Heading, Text } from '@chakra-ui/react';
 
 const RestrictedAccess = () => {
     return (
-        <Box textAlign="center" py={10} px={6}>
-            <Heading as="h2" size="xl" mt={6} mb={2}>
-                Accès Restreint
-            </Heading>
-            <Text color={'gray.500'}>
-                Vous n'avez pas l'autorisation d'accéder à cette page. Veuillez vous connecter.
-            </Text>
+        <Box display="flex" alignItems="center" justifyContent="center" p={5} shadow="md" borderWidth="1px" borderColor="gray.50" bgColor="gray.50" borderRadius="lg" width="full" maxWidth="full">
+            <Flex direction="column" justifyContent="center" alignItems="center">
+                <Heading as="h2" size="xl">
+                    Veuillez vous connecter
+                </Heading>
+            </Flex>
         </Box>
     );
 };

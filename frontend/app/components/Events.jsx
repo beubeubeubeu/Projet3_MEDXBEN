@@ -12,9 +12,8 @@ import {
     Thead,
     Tr,
     Button,
-    Center
+    Flex
 } from '@chakra-ui/react';
-
 
 const getStatusDescription = (status) => {
     switch (status) {
@@ -38,12 +37,11 @@ const getStatusDescription = (status) => {
 const Events = ({ events }) => {
     return (
         <>
-            <Center bg='gray.50' h='50px' width="95%" m="auto" borderWidth='1px' borderRadius='lg' boxShadow='lg' p='6' rounded='md'>
-                <Heading as='h2' size='xl' mt="1rem" mb='1rem'>
+            <Flex justifyContent="center" alignItems="center" p="2rem">
+                <Heading as='h2' size='xl' mt="1rem">
                     Events
                 </Heading>
-            </Center >
-            <br />
+            </Flex>
             {
                 events.length > 0 ? (
                     <TableContainer>
@@ -90,4 +88,3 @@ const Events = ({ events }) => {
 };
 
 export default Events;
-

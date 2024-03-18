@@ -27,7 +27,7 @@ const WorkflowStepper = ({ workflowStatus }) => {
   }, [workflowStatus, setActiveStep]);
 
   return (
-    <Box m="auto" borderWidth='1px' borderRadius='lg' boxShadow='lg' p='6' rounded='md' bg='gray.50'>
+    <Box mt="10px" borderWidth='1px' borderRadius='lg' boxShadow='lg' p='6' rounded='md' bg='gray.50'>
       <Stepper index={activeStep}>
         {Object.entries(workflowStatuses).map(([statusKey, statusValue]) => (
           <Step key={Number(statusKey)}>

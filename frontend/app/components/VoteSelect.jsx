@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 
-import { Button, Box, useToast, Spinner } from '@chakra-ui/react'
+import { Button, Box, useToast, Spinner, Tag } from '@chakra-ui/react'
 
 import { useWriteContract } from 'wagmi'
 
 import { contractAddress, contractAbi } from '@/constants'
 
-function VoteSelect({ options = [], address }) {
+function VoteSelect({ options = [], address, refreshEvents }) {
 
   const [selectedOption, setSelectedOption] = useState(null);
 
@@ -25,6 +25,7 @@ function VoteSelect({ options = [], address }) {
           duration: 3000,
           isClosable: true,
         });
+        refreshEvents();
       },
       onError: (error) => {
         toast({
@@ -50,6 +51,7 @@ function VoteSelect({ options = [], address }) {
 
   return (
     <Box>
+      <Tag>Time to vote</Tag>
       {options.map(option => (
         <Box
           as="button"

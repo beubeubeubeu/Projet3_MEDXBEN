@@ -1,11 +1,10 @@
 'use client'
 import React, { useState, useEffect } from 'react';
-import { Box } from '@chakra-ui/react';
-import { useReadContract, useAccount, useWatchContractEvent } from 'wagmi';
+import { Box, Spinner, Text } from '@chakra-ui/react';
+import { useReadContract, useAccount } from 'wagmi';
 import { contractAddress, contractAbi } from '@/constants';
 import { publicClient } from '@/network/client'
 
-import NextPhaseButton from './NextPhaseButton';
 import { parseAbiItem } from 'viem'
 
 // VIEW ACCESS
@@ -16,13 +15,12 @@ import NotConnected from './NotConnected';
 import UnregisteredUser from './UnregisteredUser'
 
 const Voting = () => {
-    const { address } = useAccount();
+    const { address, isConnecting } = useAccount();
     const [events, setEvents] = useState([]);
-    const [refreshEvents, setRefreshEvents] = useState(false);
     const [userRights, setUserRights] = useState('loading');
 
     // Récupère le statut actuel du workflow
-    const { data: getWorkflowStatus } = useReadContract({
+    const { data: getWorkflowStatus, refetch: refetchWorkflowStatus } = useReadContract({
         address: contractAddress,
         abi: contractAbi,
         functionName: 'workflowStatus',
@@ -157,13 +155,6 @@ const Voting = () => {
         getAllProposals();
     }, [address])
 
-    useEffect(() => {
-        if (refreshEvents) {
-            getEvents(); // Fonction pour récupérer les événements
-            setRefreshEvents(false); // Réinitialise l'état pour les futurs rafraîchissements
-        }
-    }, [refreshEvents]);
-
     //////////////////////////////// ACCESS ///////////////////////////////////////////////
 
     const { data: getVoter } = useReadContract({
@@ -187,44 +178,49 @@ const Voting = () => {
         }
     }, [address, getVoter, isOwnerData]);
 
-    if (!address) {
-        return <NotConnected />;
-    } else if (userRights === 'admin') {
-        return <AdminAccess
-            NextPhaseButton={NextPhaseButton}
-            getWorkflowStatus={getWorkflowStatus}
-            onSuccessfulNextPhase={getEvents}
-            address={address}
-            setRefreshEvents={setRefreshEvents}
-            events={events}
-        />;
-    } else if (userRights === 'loading') {
-        return <Box>Loading...</Box>;
-
-    } else if (userRights === 'voter') {
-        return <VoterAccess
-            workflowStatus={getWorkflowStatus}
-            address={address}
-            options={voteOptions}
-            events={events}
-        />;
-
-    } else if (userRights === 'unregistered') {
-        return <UnregisteredUser
-            workflowStatus={getWorkflowStatus}
-            address={address}
-        />;
-
-    } else if (userRights === null) {
-        return <RestrictedAccess
-            workflowStatus={getWorkflowStatus}
-        />;
+    const setNextPhase = function () {
+        getEvents();
+        refetchWorkflowStatus();
     }
 
-    return (
-        <Text> something is wrong </Text>
-    );
-
+    switch (userRights) {
+        case 'loading':
+            return (
+                <Box  display="flex" alignItems="center" justifyContent="center" p={5} shadow="md" borderWidth="1px" borderColor="gray.50" bgColor="gray.50" borderRadius="lg" width="full" maxWidth="full">
+                    <Spinner />
+                </Box>
+            );
+        case 'admin':
+            return <AdminAccess
+                workflowStatus={getWorkflowStatus}
+                onSuccessfulNextPhase={setNextPhase}
+                setRefreshEvents={getEvents}
+                address={address}
+                events={events}
+            />;
+        case 'voter':
+            return <VoterAccess
+                workflowStatus={getWorkflowStatus}
+                address={address}
+                options={voteOptions}
+                events={events}
+                onSuccessAddProposal={getEvents}
+                refreshEvents={getEvents}
+            />;
+        case 'unregistered':
+            return <UnregisteredUser
+                workflowStatus={getWorkflowStatus}
+                address={address}
+            />;
+        case null:
+            if (!isConnecting) {
+                return <RestrictedAccess />;
+            }
+        default:
+            if (!address && !isConnecting) {
+                return <NotConnected />;
+            }
+    }
 };
 
 export default Voting;

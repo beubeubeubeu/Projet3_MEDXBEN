@@ -20,7 +20,6 @@ const NextPhaseButton = ({workflowStatus, onSuccessfulNextPhase}) => {
           duration: 3000,
           isClosable: true,
         });
-        // setRefreshEvents(true);
       },
       onError: (error) => {
         toast({

@@ -2,12 +2,11 @@ import React from 'react'
 
 import { useState } from 'react'
 
-import { Box, Button, Flex, Input, Text, useToast, Tag } from '@chakra-ui/react'
+import { Box, Button, Flex, Input, useToast, Tag } from '@chakra-ui/react'
 
 import { useWriteContract } from 'wagmi'
 
 import { contractAddress, contractAbi } from '@/constants'
-
 
 const AddVoter = ({ setRefreshEvents }) => {
 
@@ -24,7 +23,8 @@ const AddVoter = ({ setRefreshEvents }) => {
           duration: 3000,
           isClosable: true,
         });
-        setRefreshEvents(true);
+        setVoterAddress('');
+        setRefreshEvents();
       },
       onError: (error) => {
         toast({
@@ -51,7 +51,7 @@ const AddVoter = ({ setRefreshEvents }) => {
     <Box>
       <Tag>Add a new voter</Tag>
       <Flex>
-        <Input placeholder='New voter address' onChange={(e) => setVoterAddress(e.target.value)} />
+        <Input placeholder='New voter address' value={voterAddress} onChange={(e) => setVoterAddress(e.target.value)} />
         <Button disabled={addVoterIsPending} onClick={addVoter}>{addVoterIsPending ? 'Confirming...' : 'Add voter'} </Button>
       </Flex>
     </Box>
