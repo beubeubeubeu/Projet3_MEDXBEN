@@ -217,9 +217,7 @@ const Voting = () => {
                 return <RestrictedAccess />;
             }
         default:
-            if (!address && !isConnecting) {
-                return <NotConnected />;
-            }
+            return <NotConnected />;
     }
 };
 

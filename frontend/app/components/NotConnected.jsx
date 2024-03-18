@@ -22,9 +22,9 @@ const NotConnected = () => {
                     </Heading>
                 </CardHeader>
             </Card>
-            </Flex>
+        </Flex>
         </>
     )
 }
 
-export default NotConnected
+export default NotConnected;
