@@ -5,7 +5,7 @@ Lien vidéo:
 
 Lien de la Dapp : https://projet3-medxben.vercel.app/
 
-Déployé sur sépolia et Vercel
+Déployé sur Sepolia et Vercel
 
 Groupe constitué de :
 Benoit Nguyen et
