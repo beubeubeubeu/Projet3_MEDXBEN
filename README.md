@@ -1,7 +1,13 @@
 # Dapp Voting
-Pour correction :
 
-Lien vidéo: 
+
+Groupe constitué de :
+Benoit Nguyen et
+Médhi Khoulé
+
+### Pour correction :
+
+Lien vidéo (local) : 
 
 Lien de la Dapp : https://projet3-medxben.vercel.app/
 
@@ -9,9 +15,14 @@ Lien Etherscan du contract : https://sepolia.etherscan.io/address/0xCd8CA7D3D6Ae
 
 Déployé sur Sepolia et Vercel
 
-Groupe constitué de :
-Benoit Nguyen et
-Médhi Khoulé
+Screen interface admin Vercel
+
+![AdminAccess](https://github.com/beubeubeubeu/Projet3_MEDXBEN/assets/4832337/0de518ca-226f-4c15-a818-13705d2b92da)
+
+
+Screen interface voter Vercel
+
+<img width="1429" alt="Screenshot 2024-03-18 at 14 52 31" src="https://github.com/beubeubeubeu/Projet3_MEDXBEN/assets/4832337/a2e06b60-974b-4c0a-8880-f145af833795">
 
 ___
 ### Détails
