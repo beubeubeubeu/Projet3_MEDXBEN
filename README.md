@@ -5,6 +5,8 @@ Lien vidéo:
 
 Lien de la Dapp : https://projet3-medxben.vercel.app/
 
+Lien Etherscan du contract : https://sepolia.etherscan.io/address/0xCd8CA7D3D6Ae572F7BC2a602FafD7d4bB2C763c7
+
 Déployé sur Sepolia et Vercel
 
 Groupe constitué de :
