@@ -7,7 +7,7 @@ Médhi Khoulé
 
 ### Pour correction :
 
-Lien vidéo (démot en local) : https://www.loom.com/share/acac9d25befd4c88bd36466454548e2c?sid=8f497ba5-0afc-4c3e-8f91-5b8be2dfab91
+Lien vidéo (démo en local) : https://www.loom.com/share/acac9d25befd4c88bd36466454548e2c?sid=8f497ba5-0afc-4c3e-8f91-5b8be2dfab91
 
 Lien de la Dapp : https://projet3-medxben.vercel.app/
 
